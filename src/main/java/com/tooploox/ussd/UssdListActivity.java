@@ -1,11 +1,11 @@
 package com.tooploox.ussd;
 
-import android.content.Context;
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,18 +13,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.zip.Inflater;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class UssdListActivity extends AppCompatActivity {
+
 
     private class Holder extends RecyclerView.ViewHolder {
 
@@ -35,6 +33,7 @@ public class UssdListActivity extends AppCompatActivity {
             this.binding = binding;
         }
     }
+
 
     private class Adapter extends RecyclerView.Adapter<Holder> {
 
@@ -58,33 +57,58 @@ public class UssdListActivity extends AppCompatActivity {
         }
     }
 
-    private class AddUssdDialog extends AlertDialog {
 
-        protected AddUssdDialog(Context context) {
-            super(context);
-        }
+    class ActivityViews {
+        @BindView(R.id.recycler_view)
+        RecyclerView rv;
+
+        @BindView(R.id.button_add)
+        FloatingActionButton fab;
     }
+
+
+    class DialogVies {
+
+    }
+
 
     private Adapter adapter = new Adapter();
-
-    @BindView(R.id.recycler_view)
-    RecyclerView rv;
-
-    @OnClick(R.id.button_add)
-    public void onAddButtonClicked(View button) {
-
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity);
-        ButterKnife.bind(this);
 
-        rv.setHasFixedSize(true);
-        rv.setLayoutManager(new LinearLayoutManager(this));
-        rv.setAdapter(adapter);
+        ActivityViews av = new ActivityViews();
+        ButterKnife.bind(av, this);
+
+        av.fab.setOnClickListener(this::onAddButtonClicked);
+
+        av.rv.setHasFixedSize(true);
+        av.rv.setLayoutManager(new LinearLayoutManager(this));
+        av.rv.setAdapter(adapter);
+    }
+
+    public void onAddButtonClicked(View button) {
+        DialogVies dv = new DialogVies();
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(R.layout.dialog)
+                .setCancelable(true)
+                .setTitle(R.string.add_ussd)
+                .setPositiveButton(android.R.string.ok, (d, which) -> {
+                    d.dismiss();
+                    onDoneButtonClicked(dv);
+                })
+                .create();
+        dialog.show();
+
+        ButterKnife.bind(dv, dialog);
+    }
+
+    public void onDoneButtonClicked(DialogVies dv) {
+        Toast.makeText(this, "OK", Toast.LENGTH_LONG).show();
+//        adapter.data.add();
     }
 
 }
