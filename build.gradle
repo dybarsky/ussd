@@ -5,10 +5,12 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 
 repositories {
     mavenCentral()
@@ -22,12 +24,17 @@ dependencies {
 
     compile 'com.jakewharton:butterknife:8.0.1'
 
-
+    compile 'org.parceler:parceler-api:1.1.5'
+    apt 'org.parceler:parceler:1.1.5'
 }
 
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
+
+    dataBinding {
+        enabled = true
+    }
 
     defaultConfig {
         versionCode 1
