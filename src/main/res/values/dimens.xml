@@ -5,6 +5,8 @@
     <dimen name="list_item_height">48dp</dimen>
     <dimen name="list_item_padding">16dp</dimen>
     <dimen name="list_margin">4dp</dimen>
+    <dimen name="dialog_row_margin">16dp</dimen>
+    <dimen name="dialog_et_margin_top">6dp</dimen>
 
 </resources>
 

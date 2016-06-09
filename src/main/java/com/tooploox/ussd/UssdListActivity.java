@@ -12,12 +12,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -65,11 +70,18 @@ public class UssdListActivity extends AppCompatActivity {
 
         @BindView(R.id.button_add)
         FloatingActionButton fab;
+
+        @BindString(R.string.empty_result)
+        String emptyResult;
     }
 
 
     class DialogVies {
+        @BindView(R.id.dialog_et_ussd_query)
+        EditText etUssdQuery;
 
+        @BindView(R.id.dialog_et_regex)
+        EditText etRegex;
     }
 
 
@@ -96,7 +108,6 @@ public class UssdListActivity extends AppCompatActivity {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(R.layout.dialog)
                 .setCancelable(true)
-                .setTitle(R.string.add_ussd)
                 .setPositiveButton(android.R.string.ok, (d, which) -> {
                     d.dismiss();
                     onDialogDoneButtonClicked(dv);
@@ -111,17 +122,20 @@ public class UssdListActivity extends AppCompatActivity {
         Matcher matcher = Pattern
                 .compile(ussd.getRegex())
                 .matcher(ussd.getResponse());
-        return matcher.matches()
+        return matcher.find()
                 ? matcher.group()
-                : "-";
+                : av.emptyResult;
     }
 
     public void onDialogDoneButtonClicked(DialogVies dv) {
+        Predicate<EditText> etPredicate = et -> et.getText() == null || Strings.isNullOrEmpty(et.getText().toString());
+        if (etPredicate.apply(dv.etRegex) || etPredicate.apply(dv.etUssdQuery))
+            return;
+
         Ussd ussd = new Ussd();
-        ussd.setCode("*101#");
-        ussd.setRegex("\\d+.\\d+");
-        ussd.setResponse("Stan Twojego konta wynosi 24.56");
-        ussd.setResult(match(ussd));
+        ussd.setCode(dv.etUssdQuery.getText().toString());
+        ussd.setRegex(dv.etRegex.getText().toString());
+        ussd.setResult(av.emptyResult);
 
         adapter.data.add(ussd);
         adapter.notifyDataSetChanged();

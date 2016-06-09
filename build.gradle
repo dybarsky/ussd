@@ -29,6 +29,8 @@ dependencies {
 
     compile 'org.parceler:parceler-api:1.1.5'
     apt 'org.parceler:parceler:1.1.5'
+
+    compile 'com.google.guava:guava:19.0'
 }
 
 android {

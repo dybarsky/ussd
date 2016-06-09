@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">USSD demo</string>
-    <string name="add_ussd">Add USSD code</string>
+    <string name="ussd_code">USSD code:</string>
+    <string name="regex">Regex:</string>
+    <string name="empty_result">--</string>
 </resources>
