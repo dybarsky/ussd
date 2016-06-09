@@ -21,6 +21,9 @@
             android:layout_alignParentLeft="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:textColor="?attr/colorAccent"
+            android:minWidth="@dimen/item_result_min_width"
+            android:textAlignment="textEnd"
+            android:gravity="end"
             android:text="@{ussd.result}"
             />
 
@@ -30,6 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@id/tv_result"
+            android:paddingLeft="@dimen/item_regex_padding_left"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:text="@{ussd.regex}"
             />
@@ -38,10 +42,11 @@
             android:id="@+id/tv_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/tv_regex"
             android:layout_toRightOf="@id/tv_result"
+            android:paddingLeft="@dimen/item_regex_padding_left"
+            android:layout_below="@id/tv_regex"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textColor="?attr/colorAccent"
             android:text="@{ussd.code}"
             />
 
@@ -54,7 +59,6 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:text="@{ussd.response}"
             />
-
 
     </RelativeLayout>
 
