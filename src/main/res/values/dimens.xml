@@ -2,6 +2,9 @@
 <resources>
     <dimen name="fab_margin">24dp</dimen>
     <dimen name="fab_elevation">6dp</dimen>
+    <dimen name="list_item_height">48dp</dimen>
+    <dimen name="list_item_padding">16dp</dimen>
+    <dimen name="list_margin">4dp</dimen>
 
 </resources>
 

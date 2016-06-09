@@ -7,27 +7,52 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/tv_code"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{ussd.code}"
-            />
-
-        <TextView
-            android:id="@+id/tv_regexp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{ussd.regexp}"
-            />
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/list_item_height"
+        android:padding="@dimen/list_item_padding"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground">
 
         <TextView
             android:id="@+id/tv_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="?attr/colorAccent"
             android:text="@{ussd.result}"
+            />
+
+        <TextView
+            android:id="@+id/tv_regex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/tv_result"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="@{ussd.regex}"
+            />
+
+        <TextView
+            android:id="@+id/tv_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/tv_regex"
+            android:layout_toRightOf="@id/tv_result"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:text="@{ussd.code}"
+            />
+
+        <TextView
+            android:id="@+id/tv_response"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv_code"
+            android:layout_below="@id/tv_regex"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:text="@{ussd.response}"
             />
 
 

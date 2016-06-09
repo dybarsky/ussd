@@ -10,7 +10,7 @@ import org.parceler.Parcel;
 public class Ussd {
 
     private String code;
-    private String regexp;
+    private String regex;
     private String result;
     private String response;
 
@@ -22,12 +22,12 @@ public class Ussd {
         this.code = code;
     }
 
-    public String getRegexp() {
-        return regexp;
+    public String getRegex() {
+        return regex;
     }
 
-    public void setRegexp(String regexp) {
-        this.regexp = regexp;
+    public void setRegex(String regex) {
+        this.regex = regex;
     }
 
     public String getResult() {
@@ -46,26 +46,26 @@ public class Ussd {
         this.response = response;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Ussd ussd = (Ussd) o;
-
-        if (code != null ? !code.equals(ussd.code) : ussd.code != null) return false;
-        if (regexp != null ? !regexp.equals(ussd.regexp) : ussd.regexp != null) return false;
-        if (result != null ? !result.equals(ussd.result) : ussd.result != null) return false;
-        return response != null ? response.equals(ussd.response) : ussd.response == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result1 = code != null ? code.hashCode() : 0;
-        result1 = 31 * result1 + (regexp != null ? regexp.hashCode() : 0);
-        result1 = 31 * result1 + (result != null ? result.hashCode() : 0);
-        result1 = 31 * result1 + (response != null ? response.hashCode() : 0);
-        return result1;
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//
+//        Ussd ussd = (Ussd) o;
+//
+//        if (code != null ? !code.equals(ussd.code) : ussd.code != null) return false;
+//        if (regex != null ? !regex.equals(ussd.regex) : ussd.regex != null) return false;
+//        if (result != null ? !result.equals(ussd.result) : ussd.result != null) return false;
+//        return response != null ? response.equals(ussd.response) : ussd.response == null;
+//
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        int result1 = code != null ? code.hashCode() : 0;
+//        result1 = 31 * result1 + (regex != null ? regex.hashCode() : 0);
+//        result1 = 31 * result1 + (result != null ? result.hashCode() : 0);
+//        result1 = 31 * result1 + (response != null ? response.hashCode() : 0);
+//        return result1;
+//    }
 }

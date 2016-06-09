@@ -1,6 +1,5 @@
 package com.tooploox.ussd;
 
-import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
@@ -13,10 +12,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,6 +43,7 @@ public class UssdListActivity extends AppCompatActivity {
         public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.item, parent, false);
+            binding.getRoot().setOnClickListener(v -> onListItemClicked(av.rv.getChildAdapterPosition(v)));
             return new Holder(binding);
         }
 
@@ -73,6 +74,7 @@ public class UssdListActivity extends AppCompatActivity {
 
 
     private Adapter adapter = new Adapter();
+    private ActivityViews av = new ActivityViews();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,7 +82,6 @@ public class UssdListActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity);
 
-        ActivityViews av = new ActivityViews();
         ButterKnife.bind(av, this);
 
         av.fab.setOnClickListener(this::onAddButtonClicked);
@@ -98,7 +99,7 @@ public class UssdListActivity extends AppCompatActivity {
                 .setTitle(R.string.add_ussd)
                 .setPositiveButton(android.R.string.ok, (d, which) -> {
                     d.dismiss();
-                    onDoneButtonClicked(dv);
+                    onDialogDoneButtonClicked(dv);
                 })
                 .create();
         dialog.show();
@@ -106,9 +107,28 @@ public class UssdListActivity extends AppCompatActivity {
         ButterKnife.bind(dv, dialog);
     }
 
-    public void onDoneButtonClicked(DialogVies dv) {
-        Toast.makeText(this, "OK", Toast.LENGTH_LONG).show();
-//        adapter.data.add();
+    private String match(Ussd ussd) {
+        Matcher matcher = Pattern
+                .compile(ussd.getRegex())
+                .matcher(ussd.getResponse());
+        return matcher.matches()
+                ? matcher.group()
+                : "-";
     }
 
+    public void onDialogDoneButtonClicked(DialogVies dv) {
+        Ussd ussd = new Ussd();
+        ussd.setCode("*101#");
+        ussd.setRegex("\\d+.\\d+");
+        ussd.setResponse("Stan Twojego konta wynosi 24.56");
+        ussd.setResult(match(ussd));
+
+        adapter.data.add(ussd);
+        adapter.notifyDataSetChanged();
+    }
+
+
+    public void onListItemClicked(int adapterPosition) {
+
+    }
 }
