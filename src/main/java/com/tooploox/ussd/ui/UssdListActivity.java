@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.tooploox.ussd.R;
+import com.tooploox.ussd.data.UssdRunner;
 import com.tooploox.ussd.data.UssdStorage;
 import com.tooploox.ussd.domain.Ussd;
 import com.tooploox.ussd.utils.Predicate;
@@ -83,7 +84,7 @@ public class UssdListActivity extends AppCompatActivity {
     private DialogViews dialogViews = new DialogViews();
     private UiEventsReactor eventsReactor = new UiEventsReactor();
     private UssdListAdapter adapter = new UssdListAdapter();
-    private Presenter presenter = new Presenter(new UssdStorage(), adapter);
+    private UssdListPresenter presenter = new UssdListPresenter(new UssdStorage(), adapter, new UssdRunner());
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
