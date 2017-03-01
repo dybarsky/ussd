@@ -55,7 +55,6 @@ public class UssdListActivity extends AppCompatActivity {
 
     class UiEventsReactor {
 
-
         @OnClick(R.id.button_add)
         public void onAddUssdButtonClicked(View button) {
             showAddUssdDialog();
