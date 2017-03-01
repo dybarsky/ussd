@@ -41,7 +41,19 @@ public class UssdListActivity extends AppCompatActivity {
         EditText etRegex;
     }
 
+    class Logic {
+
+        private Predicate<EditText> notEmptyPredicate =
+                et -> et.getText() != null && !Strings.isNullOrEmpty(et.getText().toString());
+
+        boolean isInputValid() {
+            return notEmptyPredicate.apply(dialogViews.etRegex) && notEmptyPredicate.apply(dialogViews.etUssdQuery);
+        }
+
+    }
+
     class UiEventsReactor {
+
 
         @OnClick(R.id.button_add)
         public void onAddUssdButtonClicked(View button) {
@@ -49,7 +61,7 @@ public class UssdListActivity extends AppCompatActivity {
         }
 
         public void onDialogDoneButtonClicked(DialogInterface dialog, int which) {
-            if (etPredicate.apply(dialogViews.etRegex) || etPredicate.apply(dialogViews.etUssdQuery))
+            if (!logic.isInputValid())
                 return;
 
             Ussd ussd = new Ussd();
@@ -66,13 +78,12 @@ public class UssdListActivity extends AppCompatActivity {
         }
     }
 
-    private Predicate<EditText> etPredicate = et -> et.getText() == null || Strings.isNullOrEmpty(et.getText().toString());
+    private Logic logic = new Logic();
     private ActivityViews activityViews = new ActivityViews();
     private DialogViews dialogViews = new DialogViews();
     private UiEventsReactor eventsReactor = new UiEventsReactor();
     private UssdListAdapter adapter = new UssdListAdapter();
-    private UssdStorage storage = new UssdStorage();
-    private Presenter presenter = new Presenter(storage, adapter);
+    private Presenter presenter = new Presenter(new UssdStorage(), adapter);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

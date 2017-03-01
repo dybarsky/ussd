@@ -1,6 +1,6 @@
 package com.tooploox.ussd.ui;
 
-import com.tooploox.ussd.data.UssdStorage;
+import com.tooploox.ussd.data.UssdRepository;
 import com.tooploox.ussd.domain.Ussd;
 
 /**
@@ -9,21 +9,21 @@ import com.tooploox.ussd.domain.Ussd;
  */
 public class Presenter {
 
-    private UssdStorage storage;
-    private UssdListAdapter adapter;
+    private UssdRepository repository;
+    private UssdViewModel viewModel;
 
-    public Presenter(UssdStorage storage, UssdListAdapter adapter) {
-        this.storage = storage;
-        this.adapter = adapter;
+    public Presenter(UssdRepository ussdRepository, UssdViewModel viewModel) {
+        this.repository = ussdRepository;
+        this.viewModel = viewModel;
     }
 
     public void addUssd(Ussd ussd) {
-        storage.addUssd(ussd);
+        repository.addUssd(ussd);
         loadUssdList();
     }
     
     public void loadUssdList() {
-        adapter.setDataAndInvalidate(storage.getUssdList());
+        viewModel.setDataAndInvalidateView(repository.getUssdList());
     }
     
     public void runUssd(Ussd ussd) {

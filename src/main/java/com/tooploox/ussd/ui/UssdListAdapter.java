@@ -17,7 +17,7 @@ import java.util.List;
  * Maksym Dybarskyi | maksym.dybarskyi@tooploox.com
  * 01/03/2017 16:35
  */
-class UssdListAdapter extends RecyclerView.Adapter<UssdListAdapter.Holder> {
+class UssdListAdapter extends RecyclerView.Adapter<UssdListAdapter.Holder> implements UssdViewModel {
 
     class Holder extends RecyclerView.ViewHolder {
 
@@ -50,7 +50,8 @@ class UssdListAdapter extends RecyclerView.Adapter<UssdListAdapter.Holder> {
         return data.size();
     }
 
-    public void setDataAndInvalidate(List<Ussd> data) {
+    @Override
+    public void setDataAndInvalidateView(List<Ussd> data) {
         this.data = data;
         this.notifyDataSetChanged();
     }
