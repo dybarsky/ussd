@@ -1,4 +1,4 @@
-package com.tooploox.ussd;
+package com.tooploox.ussd.domain;
 
 import org.parceler.Parcel;
 

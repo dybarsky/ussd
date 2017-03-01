@@ -1,4 +1,4 @@
-package com.tooploox.ussd;
+package com.tooploox.ussd.accessibility;
 
 import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityEvent;

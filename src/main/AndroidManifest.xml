@@ -8,7 +8,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name">
 
-        <activity android:name=".UssdListActivity"
+        <activity android:name=".ui.UssdListActivity"
                   android:label="@string/app_name"
                   android:icon="@mipmap/ic_launcher"
                   android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -20,7 +20,7 @@
 
         </activity>
 
-        <service android:name=".UssdAccessibilityService" >
+        <service android:name=".accessibility.UssdAccessibilityService" >
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
