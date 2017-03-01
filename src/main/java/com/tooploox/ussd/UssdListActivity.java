@@ -16,6 +16,8 @@ import android.widget.EditText;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.tooploox.ussd.R;
+import com.tooploox.ussd.Ussd;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +56,7 @@ public class UssdListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(Holder holder, int position) {
-            holder.binding.setVariable(BR.ussd, data.get(position));
+            holder.binding.setVariable(com.tooploox.ussd.BR.ussd, data.get(position));
         }
 
         @Override
