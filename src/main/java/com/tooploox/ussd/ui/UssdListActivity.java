@@ -13,9 +13,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 
+import com.tooploox.ussd.App;
 import com.tooploox.ussd.R;
-import com.tooploox.ussd.data.UssdRunner;
-import com.tooploox.ussd.data.UssdStorage;
 import com.tooploox.ussd.domain.Ussd;
 import com.tooploox.ussd.utils.Predicate;
 import com.tooploox.ussd.utils.Strings;
@@ -88,7 +87,7 @@ public class UssdListActivity extends AppCompatActivity {
     private DialogViews dialogViews = new DialogViews();
     private UiEventsReactor eventsReactor = new UiEventsReactor();
     private UssdListAdapter adapter = new UssdListAdapter(view -> activityViews.recyclerView.getChildAdapterPosition(view), eventsReactor);
-    private UssdListPresenter presenter = new UssdListPresenter(new UssdStorage(), adapter, new UssdRunner(this));
+    private UssdListPresenter presenter = new UssdListPresenter(App.INSTANCE.ussdStorage, adapter, App.INSTANCE.ussdExecutor);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
