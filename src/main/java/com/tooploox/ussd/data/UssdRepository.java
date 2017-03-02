@@ -14,5 +14,7 @@ public interface UssdRepository {
 
     void removeUssd(Ussd ussd);
 
+    void updateUssd(Ussd ussd);
+
     List<Ussd> getUssdList();
 }

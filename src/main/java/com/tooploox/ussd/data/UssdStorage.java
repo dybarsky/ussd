@@ -24,6 +24,18 @@ public class UssdStorage implements UssdRepository {
     }
 
     @Override
+    public void updateUssd(Ussd ussd) {
+        for (Ussd u : list) {
+            if (u.equals(ussd)) {
+                u.setCode(ussd.getCode());
+                u.setRegex(ussd.getRegex());
+                u.setResponse(ussd.getResponse());
+                u.setResult(ussd.getResult());
+            }
+        }
+    }
+
+    @Override
     public List<Ussd> getUssdList() {
         return (List<Ussd>) list.clone();
     }
