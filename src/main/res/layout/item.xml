@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/tv_code"
             android:paddingLeft="@dimen/item_response_padding_left"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textSize="@dimen/small_text_size"
             android:text="@{ussd.response}"
             />
 
