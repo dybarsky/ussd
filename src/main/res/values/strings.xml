@@ -3,5 +3,5 @@
     <string name="app_name">USSD demo</string>
     <string name="ussd_code">USSD code:</string>
     <string name="regex">Regex:</string>
-    <string name="empty_result">--</string>
+    <string name="accessibility_service_description">This accessibility service designed to catch USSD response</string>
 </resources>
