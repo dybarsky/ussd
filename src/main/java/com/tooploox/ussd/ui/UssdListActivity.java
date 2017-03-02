@@ -1,8 +1,11 @@
 package com.tooploox.ussd.ui;
 
+import android.Manifest;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -53,7 +56,7 @@ public class UssdListActivity extends AppCompatActivity {
 
     }
 
-    class UiEventsReactor {
+    public class UiEventsReactor {
 
         @OnClick(R.id.button_add)
         public void onAddUssdButtonClicked(View button) {
@@ -73,17 +76,19 @@ public class UssdListActivity extends AppCompatActivity {
             dialog.dismiss();
         }
 
-        public void onUssdItemClicked() {
-
+        public void onUssdItemClicked(Ussd ussd) {
+            presenter.runUssd(ussd);
         }
     }
+
+    private static final int CALL_USSD_PERMISSION = 1;
 
     private Logic logic = new Logic();
     private ActivityViews activityViews = new ActivityViews();
     private DialogViews dialogViews = new DialogViews();
     private UiEventsReactor eventsReactor = new UiEventsReactor();
-    private UssdListAdapter adapter = new UssdListAdapter();
-    private UssdListPresenter presenter = new UssdListPresenter(new UssdStorage(), adapter, new UssdRunner());
+    private UssdListAdapter adapter = new UssdListAdapter(view -> activityViews.recyclerView.getChildAdapterPosition(view), eventsReactor);
+    private UssdListPresenter presenter = new UssdListPresenter(new UssdStorage(), adapter, new UssdRunner(this));
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,6 +103,12 @@ public class UssdListActivity extends AppCompatActivity {
         activityViews.recyclerView.setAdapter(adapter);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkPermission();
+    }
+
     public void showAddUssdDialog() {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(R.layout.dialog)
@@ -107,6 +118,12 @@ public class UssdListActivity extends AppCompatActivity {
         dialog.show();
 
         ButterKnife.bind(dialogViews, dialog);
+    }
+
+    private void checkPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, CALL_USSD_PERMISSION);
+        }
     }
 
 //    private String match(Ussd ussd) {

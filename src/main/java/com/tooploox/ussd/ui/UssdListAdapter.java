@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.tooploox.ussd.BR;
 import com.tooploox.ussd.R;
 import com.tooploox.ussd.domain.Ussd;
+import com.tooploox.ussd.utils.ItemViewPositionProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,19 +31,29 @@ class UssdListAdapter extends RecyclerView.Adapter<UssdListAdapter.Holder> imple
     }
 
     private List<Ussd> data = new ArrayList<>();
+    private ItemViewPositionProvider viewPositionProvider;
+    private UssdListActivity.UiEventsReactor uiEventsReactor;
+
+    public UssdListAdapter(ItemViewPositionProvider viewPositionProvider, UssdListActivity.UiEventsReactor uiEventsReactor) {
+        this.viewPositionProvider = viewPositionProvider;
+        this.uiEventsReactor = uiEventsReactor;
+    }
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.item, parent, false);
-//        binding.getRoot().setOnClickListener(v -> listener.onClicked(av.rv.getChildAdapterPosition(v)));
+        binding.getRoot().setOnClickListener(view -> {
+            Ussd ussd = getUssdByPosition(viewPositionProvider.getPositon(view));
+            uiEventsReactor.onUssdItemClicked(ussd);
+        });
         return new Holder(binding);
 
     }
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        holder.binding.setVariable(BR.ussd, data.get(position));
+        holder.binding.setVariable(BR.ussd, getUssdByPosition(position));
     }
 
     @Override
@@ -54,5 +65,9 @@ class UssdListAdapter extends RecyclerView.Adapter<UssdListAdapter.Holder> imple
     public void setDataAndInvalidateView(List<Ussd> data) {
         this.data = data;
         this.notifyDataSetChanged();
+    }
+
+    private Ussd getUssdByPosition(int position) {
+        return data.get(position);
     }
 }
