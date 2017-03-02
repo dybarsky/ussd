@@ -16,10 +16,10 @@ import android.widget.EditText;
 import com.tooploox.ussd.App;
 import com.tooploox.ussd.R;
 import com.tooploox.ussd.domain.Ussd;
+import com.tooploox.ussd.domain.UssdResultMatcher;
 import com.tooploox.ussd.utils.Predicate;
 import com.tooploox.ussd.utils.Strings;
 
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -30,9 +30,6 @@ public class UssdListActivity extends AppCompatActivity {
 
         @BindView(R.id.recycler_view)
         RecyclerView recyclerView;
-
-        @BindString(R.string.empty_result)
-        String emptyResult;
     }
 
     class DialogViews {
@@ -66,12 +63,7 @@ public class UssdListActivity extends AppCompatActivity {
             if (!logic.isInputValid())
                 return;
 
-            Ussd ussd = new Ussd();
-            ussd.setCode(dialogViews.etUssdQuery.getText().toString());
-            ussd.setRegex(dialogViews.etRegex.getText().toString());
-            ussd.setResult(activityViews.emptyResult);
-            presenter.addUssd(ussd);
-
+            presenter.addUssd(dialogViews.etUssdQuery.getText().toString(), dialogViews.etRegex.getText().toString());
             dialog.dismiss();
         }
 
@@ -124,13 +116,4 @@ public class UssdListActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, CALL_USSD_PERMISSION);
         }
     }
-
-//    private String match(Ussd ussd) {
-//        Matcher matcher = Pattern
-//                .compile(ussd.getRegex())
-//                .matcher(ussd.getResponse());
-//        return matcher.find()
-//                ? matcher.group()
-//                : activityViews.emptyResult;
-//    }
 }

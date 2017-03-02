@@ -3,6 +3,7 @@ package com.tooploox.ussd.ui;
 import com.tooploox.ussd.data.UssdExecutor;
 import com.tooploox.ussd.data.UssdRepository;
 import com.tooploox.ussd.domain.Ussd;
+import com.tooploox.ussd.domain.UssdResultMatcher;
 
 /**
  * Maksym Dybarskyi | maksym.dybarskyi@tooploox.com
@@ -20,7 +21,11 @@ public class UssdListPresenter {
         this.executor = executor;
     }
 
-    public void addUssd(Ussd ussd) {
+    public void addUssd(String code, String regex) {
+        Ussd ussd = new Ussd();
+        ussd.setCode(code);
+        ussd.setRegex(regex);
+        UssdResultMatcher.matchResult(ussd); // init default result
         repository.addUssd(ussd);
         loadUssdList();
     }
