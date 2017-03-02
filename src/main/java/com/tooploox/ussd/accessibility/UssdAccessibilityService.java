@@ -21,11 +21,15 @@ public class UssdAccessibilityService extends AccessibilityService {
     public void onAccessibilityEvent(AccessibilityEvent event) {
         AccessibilityNodeInfo rootNode = event.getSource();
         List<AccessibilityNodeInfo> ussdResponseTextViewNodesList = rootNode.findAccessibilityNodeInfosByViewId("android:id/message");
-        if (!ussdResponseTextViewNodesList.isEmpty()) {
-            CharSequence ussdReponse = ussdResponseTextViewNodesList.get(0).getText();
-            App.INSTANCE.ussdExecutor.setResult(ussdReponse.toString());
-            App.INSTANCE.eventBus.sendEvent(EventBus.Event.USSD_RESULT_RECEIVED);
+        List<AccessibilityNodeInfo> cancelButtonNodesList = rootNode.findAccessibilityNodeInfosByViewId("android:id/button2");
+
+        if (ussdResponseTextViewNodesList.isEmpty() || cancelButtonNodesList.isEmpty()) {
+            return;
         }
+        CharSequence ussdReponse = ussdResponseTextViewNodesList.get(0).getText();
+        App.INSTANCE.ussdExecutor.setResult(ussdReponse.toString());
+        App.INSTANCE.eventBus.sendEvent(EventBus.Event.USSD_RESULT_RECEIVED);
+        cancelButtonNodesList.get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);
     }
 
     @Override

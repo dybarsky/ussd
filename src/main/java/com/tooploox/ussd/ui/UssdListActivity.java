@@ -17,6 +17,7 @@ import com.tooploox.ussd.App;
 import com.tooploox.ussd.R;
 import com.tooploox.ussd.domain.Ussd;
 import com.tooploox.ussd.domain.UssdResultMatcher;
+import com.tooploox.ussd.utils.EventBus;
 import com.tooploox.ussd.utils.Predicate;
 import com.tooploox.ussd.utils.Strings;
 
@@ -98,6 +99,19 @@ public class UssdListActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         checkPermission();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.loadUssdList();
+        App.INSTANCE.eventBus.subscribe(EventBus.Event.USSD_RESULT_RECEIVED, event -> presenter.loadUssdList());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        App.INSTANCE.eventBus.unsubscribe(EventBus.Event.USSD_RESULT_RECEIVED);
     }
 
     public void showAddUssdDialog() {
