@@ -2,6 +2,7 @@ package com.tooploox.ussd.accessibility;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -9,6 +10,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import com.tooploox.ussd.App;
 import com.tooploox.ussd.data.UssdRepository;
 import com.tooploox.ussd.domain.Ussd;
+import com.tooploox.ussd.utils.EventBus;
 
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class UssdAccessibilityService extends AccessibilityService {
         if (!ussdResponseTextViewNodesList.isEmpty()) {
             CharSequence ussdReponse = ussdResponseTextViewNodesList.get(0).getText();
             App.INSTANCE.ussdExecutor.setResult(ussdReponse.toString());
+            App.INSTANCE.eventBus.sendEvent(EventBus.Event.USSD_RESULT_RECEIVED);
         }
     }
 
