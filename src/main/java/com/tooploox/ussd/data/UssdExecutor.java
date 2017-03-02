@@ -9,4 +9,6 @@ import com.tooploox.ussd.domain.Ussd;
 public interface UssdExecutor {
 
     void run(Ussd ussd);
+
+    void setResult(String result);
 }
