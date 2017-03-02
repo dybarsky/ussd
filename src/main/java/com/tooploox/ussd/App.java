@@ -16,13 +16,18 @@ public class App extends Application {
 
     public static App INSTANCE;
 
-    public final UssdRepository ussdStorage = new UssdStorage();
-    public final UssdExecutor ussdExecutor = new UssdRunner(this);
-    public final EventBus eventBus = new EventBus(this);
+    public UssdRepository ussdStorage;
+    public UssdExecutor ussdExecutor;
+    public EventBus eventBus;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        ussdStorage = new UssdStorage();
+        ussdExecutor = new UssdRunner(this);
+        eventBus = new EventBus(this);
+
         INSTANCE = this;
     }
 }
