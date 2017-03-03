@@ -17,7 +17,7 @@ import com.tooploox.ussd.domain.UssdResultMatcher;
  */
 public class UssdRunner implements UssdExecutor {
 
-    private static final String encodedHash = Uri.encode("#");
+    private static final String ENCODED_HASH = Uri.encode("#");
 
     private Context context;
     private Ussd pendingUssd;
@@ -32,7 +32,7 @@ public class UssdRunner implements UssdExecutor {
             return;
         }
         pendingUssd = ussd;
-        String ussdCode = ussd.getCode().replaceAll("#", encodedHash);
+        String ussdCode = ussd.getCode().replaceAll("#", ENCODED_HASH);
         Uri uri = Uri.parse("tel:" + ussdCode);
         Intent intent = new Intent(Intent.ACTION_CALL, uri);
         context.startActivity(intent);

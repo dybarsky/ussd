@@ -11,17 +11,17 @@ import java.util.regex.Pattern;
  */
 public class UssdResultMatcher {
 
-    private static final String defaultResult = "?";
+    private static final String DEFAULT_RESULT = "?";
 
     public static void matchResult(Ussd ussd) {
-        String result = defaultResult;
+        String result = DEFAULT_RESULT;
         if (!Strings.isNullOrEmpty(ussd.getResponse())) {
             Matcher matcher = Pattern
                     .compile(ussd.getRegex())
                     .matcher(ussd.getResponse());
             result = matcher.find()
                     ? matcher.group()
-                    : defaultResult;
+                    : DEFAULT_RESULT;
         }
         ussd.setResult(result);
     }
