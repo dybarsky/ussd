@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">USSD demo</string>
+    <string name="app_name">Accessibility demo</string>
     <string name="ussd_code">USSD code:</string>
-    <string name="regex">Regex:</string>
     <string name="accessibility_service_description">This accessibility service designed to catch USSD response</string>
+    <string name="default_ussd_response">. . .</string>
 </resources>

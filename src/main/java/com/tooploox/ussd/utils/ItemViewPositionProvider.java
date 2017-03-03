@@ -9,5 +9,5 @@ import android.view.View;
 @FunctionalInterface
 public interface ItemViewPositionProvider {
 
-    int getPositon(View view);
+    int getPosition(View view);
 }

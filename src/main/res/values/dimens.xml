@@ -2,15 +2,15 @@
 <resources>
     <dimen name="fab_margin">24dp</dimen>
     <dimen name="fab_elevation">6dp</dimen>
-    <dimen name="list_item_height">48dp</dimen>
-    <dimen name="list_item_padding">16dp</dimen>
-    <dimen name="list_margin">4dp</dimen>
-    <dimen name="dialog_row_margin">16dp</dimen>
-    <dimen name="dialog_et_margin_top">6dp</dimen>
-    <dimen name="item_regex_padding_left">20dp</dimen>
-    <dimen name="item_response_padding_left">32dp</dimen>
-    <dimen name="item_result_min_width">72dp</dimen>
-    <dimen name="small_text_size">10sp</dimen>
 
+    <dimen name="list_margin">8dp</dimen>
+
+    <dimen name="list_item_min_height">32dp</dimen>
+    <dimen name="list_item_padding">16dp</dimen>
+    <dimen name="list_item_response_padding_left">32dp</dimen>
+    <dimen name="list_item_result_min_width">72dp</dimen>
+
+    <dimen name="dialog_content_padding">24dp</dimen>
+    <dimen name="dialog_et_margin_top">6dp</dimen>
 </resources>
 

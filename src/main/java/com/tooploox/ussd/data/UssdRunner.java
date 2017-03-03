@@ -9,7 +9,6 @@ import android.support.v4.app.ActivityCompat;
 
 import com.tooploox.ussd.App;
 import com.tooploox.ussd.domain.Ussd;
-import com.tooploox.ussd.domain.UssdResultMatcher;
 
 /**
  * Maksym Dybarskyi | maksym.dybarskyi@tooploox.com
@@ -31,7 +30,7 @@ public class UssdRunner implements UssdExecutor {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        pendingUssd = ussd;
+        pendingUssd = ussd.clone();
         String ussdCode = ussd.getCode().replaceAll("#", ENCODED_HASH);
         Uri uri = Uri.parse("tel:" + ussdCode);
         Intent intent = new Intent(Intent.ACTION_CALL, uri);
@@ -39,11 +38,9 @@ public class UssdRunner implements UssdExecutor {
     }
 
     @Override
-    public void setResult(String result) {
+    public void setResponse(String result) {
         pendingUssd.setResponse(result);
-        UssdResultMatcher.matchResult(pendingUssd);
         App.INSTANCE.ussdStorage.updateUssd(pendingUssd);
         pendingUssd = null;
     }
-
 }

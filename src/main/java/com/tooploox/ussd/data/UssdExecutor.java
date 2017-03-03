@@ -10,5 +10,5 @@ public interface UssdExecutor {
 
     void run(Ussd ussd);
 
-    void setResult(String result);
+    void setResponse(String result);
 }

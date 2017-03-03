@@ -42,9 +42,9 @@ class UssdListAdapter extends RecyclerView.Adapter<UssdListAdapter.Holder> imple
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.item, parent, false);
+        ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.ussd_list_item, parent, false);
         binding.getRoot().setOnClickListener(view -> {
-            Ussd ussd = getUssdByPosition(viewPositionProvider.getPositon(view));
+            Ussd ussd = getUssdByPosition(viewPositionProvider.getPosition(view));
             uiEventsReactor.onUssdItemClicked(ussd);
         });
         return new Holder(binding);

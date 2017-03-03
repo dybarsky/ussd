@@ -28,9 +28,7 @@ public class UssdRuntimeStorage implements UssdRepository {
         for (Ussd u : list) {
             if (u.getId().equals(ussd.getId())) {
                 u.setCode(ussd.getCode());
-                u.setRegex(ussd.getRegex());
                 u.setResponse(ussd.getResponse());
-                u.setResult(ussd.getResult());
             }
         }
     }

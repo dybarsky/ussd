@@ -16,7 +16,6 @@ import android.widget.EditText;
 import com.tooploox.ussd.App;
 import com.tooploox.ussd.R;
 import com.tooploox.ussd.domain.Ussd;
-import com.tooploox.ussd.domain.UssdResultMatcher;
 import com.tooploox.ussd.utils.EventBus;
 import com.tooploox.ussd.utils.Predicate;
 import com.tooploox.ussd.utils.Strings;
@@ -37,9 +36,6 @@ public class UssdListActivity extends AppCompatActivity {
 
         @BindView(R.id.dialog_et_ussd_query)
         EditText etUssdQuery;
-
-        @BindView(R.id.dialog_et_regex)
-        EditText etRegex;
     }
 
     class Logic {
@@ -48,7 +44,7 @@ public class UssdListActivity extends AppCompatActivity {
                 et -> et.getText() != null && !Strings.isNullOrEmpty(et.getText().toString());
 
         boolean isInputValid() {
-            return notEmptyPredicate.apply(dialogViews.etRegex) && notEmptyPredicate.apply(dialogViews.etUssdQuery);
+            return notEmptyPredicate.apply(dialogViews.etUssdQuery);
         }
 
     }
@@ -64,7 +60,7 @@ public class UssdListActivity extends AppCompatActivity {
             if (!logic.isInputValid())
                 return;
 
-            presenter.addUssd(dialogViews.etUssdQuery.getText().toString(), dialogViews.etRegex.getText().toString());
+            presenter.addUssd(dialogViews.etUssdQuery.getText().toString());
             dialog.dismiss();
         }
 
@@ -86,7 +82,7 @@ public class UssdListActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity);
+        setContentView(R.layout.activity_ussd_list);
 
         ButterKnife.bind(activityViews, this);
         ButterKnife.bind(eventsReactor, this);
@@ -116,7 +112,7 @@ public class UssdListActivity extends AppCompatActivity {
 
     public void showAddUssdDialog() {
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setView(R.layout.dialog)
+                .setView(R.layout.dialog_add_ussd)
                 .setCancelable(true)
                 .setPositiveButton(android.R.string.ok, eventsReactor::onDialogDoneButtonClicked)
                 .create();
