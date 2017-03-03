@@ -9,7 +9,7 @@ import java.util.List;
  * Maksym Dybarskyi | maksym.dybarskyi@tooploox.com
  * 01/03/2017 18:09
  */
-public class UssdStorage implements UssdRepository {
+public class UssdRuntimeStorage implements UssdRepository {
 
     private ArrayList<Ussd> list = new ArrayList<>();
 
@@ -26,7 +26,7 @@ public class UssdStorage implements UssdRepository {
     @Override
     public void updateUssd(Ussd ussd) {
         for (Ussd u : list) {
-            if (u.equals(ussd)) {
+            if (u.getId().equals(ussd.getId())) {
                 u.setCode(ussd.getCode());
                 u.setRegex(ussd.getRegex());
                 u.setResponse(ussd.getResponse());
