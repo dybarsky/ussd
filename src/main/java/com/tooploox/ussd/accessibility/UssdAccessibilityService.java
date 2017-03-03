@@ -19,15 +19,19 @@ public class UssdAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         AccessibilityNodeInfo rootNode = event.getSource();
+        // find textview with message id && cancel button
         List<AccessibilityNodeInfo> ussdResponseTextViewNodesList = rootNode.findAccessibilityNodeInfosByViewId(MESSAGE_VIEW_ID);
         List<AccessibilityNodeInfo> cancelButtonNodesList = rootNode.findAccessibilityNodeInfosByViewId(CANCEL_BUTTON_VIEW_ID);
 
+        // in dialog doesn't contain views - skip accessibility dialog
         if (ussdResponseTextViewNodesList.isEmpty() || cancelButtonNodesList.isEmpty()) {
             return;
         }
+        // get text from textview
         CharSequence ussdReponse = ussdResponseTextViewNodesList.get(0).getText();
         App.INSTANCE.ussdExecutor.setResponse(ussdReponse.toString());
         App.INSTANCE.eventBus.sendEvent(EventBus.Event.USSD_RESULT_RECEIVED);
+        // dismiss dialog
         cancelButtonNodesList.get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);
     }
 
