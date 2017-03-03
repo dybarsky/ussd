@@ -5,7 +5,7 @@ import android.app.Application;
 import com.tooploox.ussd.data.UssdExecutor;
 import com.tooploox.ussd.data.UssdRepository;
 import com.tooploox.ussd.data.UssdRunner;
-import com.tooploox.ussd.data.UssdRuntimeStorage;
+import com.tooploox.ussd.data.UssdSimpleStorage;
 import com.tooploox.ussd.utils.EventBus;
 
 /**
@@ -24,7 +24,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        ussdStorage = new UssdRuntimeStorage();
+        ussdStorage = new UssdSimpleStorage(this);
         ussdExecutor = new UssdRunner(this);
         eventBus = new EventBus(this);
 
