@@ -13,15 +13,15 @@ import java.util.List;
 public class UssdAccessibilityService extends AccessibilityService {
 
     private static final String MESSAGE_VIEW_ID = "android:id/message";
-    public static final String CANCEL_BUTTON_VIEW_ID = "android:id/button2";
+    public static final String BUTTON_VIEW_ID = "android:id/button1";
 
     @SuppressLint("NewApi")
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         AccessibilityNodeInfo rootNode = event.getSource();
-        // find textview with message id && cancel button
+        // find textview with message && button
         List<AccessibilityNodeInfo> ussdResponseTextViewNodesList = rootNode.findAccessibilityNodeInfosByViewId(MESSAGE_VIEW_ID);
-        List<AccessibilityNodeInfo> cancelButtonNodesList = rootNode.findAccessibilityNodeInfosByViewId(CANCEL_BUTTON_VIEW_ID);
+        List<AccessibilityNodeInfo> cancelButtonNodesList = rootNode.findAccessibilityNodeInfosByViewId(BUTTON_VIEW_ID);
 
         // in dialog doesn't contain views - skip accessibility dialog
         if (ussdResponseTextViewNodesList.isEmpty() || cancelButtonNodesList.isEmpty()) {
