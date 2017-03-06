@@ -1,11 +1,9 @@
 package com.tooploox.ussd.ui;
 
-import android.Manifest;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +16,7 @@ import com.tooploox.ussd.R;
 import com.tooploox.ussd.domain.Ussd;
 import com.tooploox.ussd.utils.EventBus;
 import com.tooploox.ussd.utils.Predicate;
+import com.tooploox.ussd.utils.SetupHelper;
 import com.tooploox.ussd.utils.Strings;
 
 import butterknife.BindView;
@@ -69,8 +68,6 @@ public class UssdListActivity extends AppCompatActivity {
         }
     }
 
-    private static final int CALL_USSD_PERMISSION = 1;
-
     private Logic logic = new Logic();
     private ActivityViews activityViews = new ActivityViews();
     private DialogViews dialogViews = new DialogViews();
@@ -94,7 +91,7 @@ public class UssdListActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        checkPermission();
+        checkSetupConditions();
     }
 
     @Override
@@ -121,9 +118,11 @@ public class UssdListActivity extends AppCompatActivity {
         ButterKnife.bind(dialogViews, dialog);
     }
 
-    private void checkPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, CALL_USSD_PERMISSION);
+    private void checkSetupConditions() {
+        if (!SetupHelper.isPermissionGranted(this) || !SetupHelper.isAccessibilityServiceEnabled(this)) {
+            Intent intent = new Intent(this, SetupActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
     }
 }

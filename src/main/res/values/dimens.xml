@@ -12,5 +12,14 @@
 
     <dimen name="dialog_content_padding">24dp</dimen>
     <dimen name="dialog_et_margin_top">6dp</dimen>
+
+    <dimen name="permission_status_left_margin">24dp</dimen>
+    <dimen name="permission_status_top_margin">64dp</dimen>
+    <dimen name="permission_description_left_margin">4dp</dimen>
+    <dimen name="permission_description_top_margin">4dp</dimen>
+    <dimen name="accessibility_description_left_margin">4dp</dimen>
+    <dimen name="accessibility_description_top_margin">4dp</dimen>
+    <dimen name="accessibility_status_top_margin">32dp</dimen>
+    <dimen name="next_button_top_margin">36dp</dimen>
 </resources>
 

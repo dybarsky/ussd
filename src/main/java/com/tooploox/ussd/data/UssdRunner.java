@@ -1,14 +1,12 @@
 package com.tooploox.ussd.data;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
 
 import com.tooploox.ussd.App;
 import com.tooploox.ussd.domain.Ussd;
+import com.tooploox.ussd.utils.SetupHelper;
 
 /**
  * Maksym Dybarskyi | maksym.dybarskyi@tooploox.com
@@ -27,13 +25,14 @@ public class UssdRunner implements UssdExecutor {
 
     @Override
     public void run(Ussd ussd) {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+        if (!SetupHelper.isPermissionGranted(context)) {
             return;
         }
         pendingUssd = ussd.clone();
         String ussdCode = ussd.getCode().replaceAll("#", ENCODED_HASH);
         Uri uri = Uri.parse("tel:" + ussdCode);
         Intent intent = new Intent(Intent.ACTION_CALL, uri);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

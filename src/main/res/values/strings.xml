@@ -4,4 +4,9 @@
     <string name="ussd_code">USSD code:</string>
     <string name="accessibility_service_description">This accessibility service designed to catch USSD response</string>
     <string name="default_ussd_response">. . .</string>
+    <string name="permission_description_disabled">Application requires additional permissions.\nClick here to allow.</string>
+    <string name="permission_description_enabled">All permissions are permitted.</string>
+    <string name="accessibility_description_disabled">Accessibility service should be enabled.\nClick here to open settings.</string>
+    <string name="accessibility_description_enabled">The accessibility service is enabled.</string>
+    <string name="next">Next</string>
 </resources>
