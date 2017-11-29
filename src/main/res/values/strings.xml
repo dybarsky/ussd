@@ -2,7 +2,11 @@
 <resources>
     <string name="app_name">Accessibility demo</string>
     <string name="ussd_code">USSD code:</string>
-    <string name="accessibility_service_description">This accessibility service designed to catch USSD response</string>
+    <string name="accessibility_service_summary">This accessibility service designed to extract USSD (quite codes) response</string>
+    <string name="accessibility_service_description">The USSD codes, also known as `quick codes`, are usually used for communicating with GSM operator. Often they look like *100#, *123#, etc.
+        Enable the accessibility service if you want it to read USSD responses (like current SIM balance, etc) from system dialog and show them in the list within the application.
+        In the application you will need to add quick code. If you click on the list item with USSD code, the system telephony dialog will appear.
+        When USSD response arrives, the accessibility service will extract the text of dialog and show it on the list within the application</string>
     <string name="default_ussd_response">. . .</string>
     <string name="permission_description_disabled">Application requires additional permissions.\nClick here to allow.</string>
     <string name="permission_description_enabled">All permissions are permitted.</string>

@@ -1,5 +1,6 @@
 package com.tooploox.ussd.data;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -23,6 +24,7 @@ public class UssdRunner implements UssdExecutor {
         this.context = context;
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void run(Ussd ussd) {
         if (!SetupHelper.isPermissionGranted(context)) {
@@ -38,8 +40,10 @@ public class UssdRunner implements UssdExecutor {
 
     @Override
     public void setResponse(String result) {
-        pendingUssd.setResponse(result);
-        App.INSTANCE.ussdStorage.updateUssd(pendingUssd);
-        pendingUssd = null;
+        if (pendingUssd != null) {
+            pendingUssd.setResponse(result);
+            App.INSTANCE.ussdStorage.updateUssd(pendingUssd);
+            pendingUssd = null;
+        }
     }
 }
