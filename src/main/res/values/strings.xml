@@ -14,4 +14,8 @@
     <string name="accessibility_description_enabled">The accessibility service is enabled.</string>
     <string name="next">Next</string>
     <string name="add_ussd">Add USSD code</string>
+    <string name="ussd_key_star">*</string>
+    <string name="ussd_key_hash">#</string>
+    <string name="ussd_key_star_description">Insert star</string>
+    <string name="ussd_key_hash_description">Insert hash</string>
 </resources>

@@ -108,12 +108,22 @@ public class UssdListActivity extends AppCompatActivity {
 
     public void showAddUssdDialog() {
         dialogBinding = DialogAddUssdBinding.inflate(getLayoutInflater());
+        // The phone keyboard of some IMEs (e.g. Gboard) cannot type * and #, which every USSD code needs.
+        final EditText codeInput = dialogBinding.dialogEtUssdQuery;
+        dialogBinding.dialogBStar.setOnClickListener(v -> insertAtCursor(codeInput, "*"));
+        dialogBinding.dialogBHash.setOnClickListener(v -> insertAtCursor(codeInput, "#"));
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(dialogBinding.getRoot())
                 .setCancelable(true)
                 .setPositiveButton(android.R.string.ok, eventsReactor::onDialogDoneButtonClicked)
                 .create();
         dialog.show();
+    }
+
+    private static void insertAtCursor(EditText editText, String text) {
+        int start = Math.max(editText.getSelectionStart(), 0);
+        int end = Math.max(editText.getSelectionEnd(), 0);
+        editText.getText().replace(Math.min(start, end), Math.max(start, end), text);
     }
 
     private boolean isInputValid() {
