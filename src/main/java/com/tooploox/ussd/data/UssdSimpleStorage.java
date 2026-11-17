@@ -7,6 +7,8 @@ import com.tooploox.ussd.domain.Ussd;
 import com.tooploox.ussd.ui.Serializer;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +19,28 @@ import java.util.Map;
 public class UssdSimpleStorage implements UssdRepository {
 
     private static final String PREFERENCES_NAME = "SimpleStorage";
+    /**
+     * Stable order for the list: code (case-insensitive, nulls last), then id. SharedPreferences.getAll() has no
+     * defined order and the model has no creation timestamp.
+     */
+    static final Comparator<Ussd> ORDER = new Comparator<Ussd>() {
+        @Override
+        public int compare(Ussd a, Ussd b) {
+            int result = compareNullsLast(a.getCode(), b.getCode(), String.CASE_INSENSITIVE_ORDER);
+            if (result != 0) {
+                return result;
+            }
+            return compareNullsLast(a.getId(), b.getId(), null);
+        }
+    };
+
+    private static int compareNullsLast(String a, String b, Comparator<String> comparator) {
+        if (a == null || b == null) {
+            return a == b ? 0 : (a == null ? 1 : -1);
+        }
+        return comparator != null ? comparator.compare(a, b) : a.compareTo(b);
+    }
+
     private Context context;
 
     public UssdSimpleStorage(Context context) {
@@ -49,9 +73,22 @@ public class UssdSimpleStorage implements UssdRepository {
         List<Ussd> ussdList = new ArrayList<>();
         SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
         Map<String, ?> serializedUssdMap = preferences.getAll();
-        for (String ussdId : serializedUssdMap.keySet()) {
-            ussdList.add(Serializer.deserialize((String) serializedUssdMap.get(ussdId)));
+        for (Map.Entry<String, ?> entry : serializedUssdMap.entrySet()) {
+            Object value = entry.getValue();
+            if (!(value instanceof String)) {
+                continue;
+            }
+            try {
+                Ussd ussd = Serializer.deserialize((String) value);
+                if (ussd != null) {
+                    ussdList.add(ussd);
+                }
+            } catch (RuntimeException e) {
+                // Unreadable entry (bad Base64, wrong type, ...): skip it instead of failing the whole list.
+                e.printStackTrace();
+            }
         }
+        Collections.sort(ussdList, ORDER);
         return ussdList;
     }
 }
