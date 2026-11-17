@@ -123,8 +123,8 @@ Open:
 1. Core feature depends on an OEM/system dialog (`com.android.phone`, view ids `android:id/message` and
    `android:id/button1`) — fragile across Android versions and vendors; not tested on a real SIM/OEM device.
 2. The UI has no way to delete a saved code (`UssdRepository.removeUssd` exists but nothing calls it).
-3. The add-USSD dialog does not auto-focus the input / show the keyboard. It has `*` and `#` buttons because
-   Gboard's phone dialpad cannot type them.
+3. The add-USSD dialog does not auto-focus the input / show the keyboard. (On an API 37 emulator, Gboard's phone
+   dialpad did not type `*`/`#`; on the maintainer's physical phone Gboard types them fine, so nothing was changed.)
 4. Material 3 default colours changed the look (the app never defined brand colours).
 5. `UssdRunner` pending state is in memory only (reply after process death is dropped and the dialog is not
    auto-dismissed); `run` silently returns when `CALL_PHONE` is missing.

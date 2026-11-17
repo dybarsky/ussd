@@ -86,9 +86,8 @@ On every matching window-state event it:
   `UssdListActivity` (`CLEAR_TASK|NEW_TASK`).
 - `UssdListActivity` (launcher, `exported=true`) — `onStart` redirects to `SetupActivity` if prerequisites are
   missing. Shows a `RecyclerView` + FAB (`ActivityUssdListBinding`). FAB opens an `AlertDialog` whose view is
-  `DialogAddUssdBinding` (`dialog_add_ussd.xml`): an `inputType=phone` field plus **`*` and `#` buttons** that
-  insert the character at the caret, because some keyboards' phone dialpad (Gboard) cannot type them. The dialog
-  does not auto-focus the field. Row tap runs the code. It subscribes to `USSD_RESULT_RECEIVED` in `onResume`
+  `DialogAddUssdBinding` (`dialog_add_ussd.xml`): a single `inputType=phone` field (the system keyboard types the
+  `*` and `#`). The dialog does not auto-focus the field. Row tap runs the code. It subscribes to `USSD_RESULT_RECEIVED` in `onResume`
   and unsubscribes in `onPause`, reloading the list on each event. The only helper inner class left is
   `UiEventsReactor` (click callbacks for the FAB, dialog OK and list rows); the former ButterKnife holder classes
   (`ActivityViews`, `DialogViews`, `Logic`) were flattened into `binding` / `dialogBinding` fields.
