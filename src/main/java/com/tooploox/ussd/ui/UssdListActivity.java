@@ -6,8 +6,13 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.EdgeToEdge;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.tooploox.ussd.App;
@@ -51,14 +56,35 @@ public class UssdListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
 
         binding = ActivityUssdListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        applyWindowInsets();
 
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerView.setAdapter(adapter);
         binding.buttonAdd.setOnClickListener(eventsReactor::onAddUssdButtonClicked);
+    }
+
+    private void applyWindowInsets() {
+        // The FAB's margin from the layout (@dimen/fab_margin) is the base; insets are added on top of it.
+        ViewGroup.MarginLayoutParams fabParams = (ViewGroup.MarginLayoutParams) binding.buttonAdd.getLayoutParams();
+        int fabLeft = fabParams.leftMargin;
+        int fabRight = fabParams.rightMargin;
+        int fabBottom = fabParams.bottomMargin;
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (root, windowInsets) -> {
+            Insets bars = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            // The list scrolls under the bars (clipToPadding=false) but its first/last rows can be reached.
+            binding.recyclerView.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+            fabParams.setMargins(fabLeft + bars.left, fabParams.topMargin, fabRight + bars.right, fabBottom + bars.bottom);
+            binding.buttonAdd.setLayoutParams(fabParams);
+            // Both children are handled above and neither needs the insets, so consume them.
+            return WindowInsetsCompat.CONSUMED;
+        });
     }
 
     @Override
