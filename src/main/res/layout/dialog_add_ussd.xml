@@ -12,7 +12,9 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/ussd_code"
+        android:labelFor="@+id/dialog_et_ussd_query"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         />
 
     <EditText
@@ -22,6 +24,7 @@
         android:layout_marginTop="@dimen/dialog_et_margin_top"
         android:inputType="phone"
         android:ems="10"
+        android:importantForAutofill="no"
         app:layout_constraintTop_toBottomOf="@id/dialog_tv_ussd_code"
         app:layout_constraintStart_toStartOf="parent"
         />

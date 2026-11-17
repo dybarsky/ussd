@@ -52,7 +52,8 @@ android {
     }
 
     lint {
-        abortOnError = false                // temporary; replace with lint-baseline.xml once warnings are triaged
+        baseline = file('lint-baseline.xml')   // pre-existing findings; new issues fail the build
+        abortOnError = true
     }
 }
 

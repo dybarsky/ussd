@@ -22,6 +22,8 @@
         android:layout_margin="@dimen/fab_margin"
         android:layout_gravity="end|bottom"
         android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="@string/add_ussd"
         android:src="@drawable/ic_add"
         app:elevation="@dimen/fab_elevation"
         app:borderWidth="0dp"

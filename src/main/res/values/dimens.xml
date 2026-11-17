@@ -8,7 +8,6 @@
     <dimen name="list_item_min_height">32dp</dimen>
     <dimen name="list_item_padding">16dp</dimen>
     <dimen name="list_item_response_padding_left">32dp</dimen>
-    <dimen name="list_item_result_min_width">72dp</dimen>
 
     <dimen name="dialog_content_padding">24dp</dimen>
     <dimen name="dialog_et_margin_top">6dp</dimen>
