@@ -9,6 +9,9 @@ import java.util.UUID;
 
 public class Ussd implements Serializable, Cloneable {
 
+    // Pins the UID computed for the originally released class so stored (serialized) data stays readable.
+    private static final long serialVersionUID = -2632603246578927450L;
+
     private String id;
     private String code;
     private String response;
