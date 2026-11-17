@@ -88,4 +88,4 @@ src/main/res/                      layouts, drawables, strings (English only)
 3. Persistence is Base64(Java serialization) in SharedPreferences, no `serialVersionUID`, list order unstable.
 4. Manifest lacks `android:exported` (build error once targetSdk ≥ 31).
 5. `POLICY.md` describes data collection (IP address, location, analytics) the app does not actually perform.
-6. Stray duplicate directory `src/main/res/res/` (unused copies of two drawables).
+6. ~~Stray directory `src/main/res/res/`~~ (removed: unreferenced alternate, less-padded renderings of `ic_enabled`/`ic_disabled`; still in git history).

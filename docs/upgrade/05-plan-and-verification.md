@@ -35,7 +35,7 @@ Do **not** run `clean` as a verification step.
 - [ ] `UssdAccessibilityService`: null checks, act only when a run is pending, review `service_config.xml` flags.
 - [ ] `UssdSimpleStorage.getUssdList`: skip `null` entries; stable ordering (sort by insertion/time/code) if desired.
 - [ ] Remove `@SuppressLint("NewApi")` (minSdk ≥ 23 makes it unnecessary).
-- [ ] Delete stray `src/main/res/res/`.
+- [x] Delete stray `src/main/res/res/` (unreferenced alternate icon renderings, not duplicates).
 - [ ] Manual test on API 36 emulator + one physical device with a SIM (USSD cannot be fully tested on an emulator).
 
 ## Phase 4 — Hardening / release
