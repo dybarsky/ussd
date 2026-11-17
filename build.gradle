@@ -1,71 +1,65 @@
-buildscript {
-    repositories {
-        google()
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
-    }
-}
-
-apply plugin: 'com.android.application'
-
-repositories {
-    google()
-    jcenter()
-}
-
-dependencies {
-    implementation 'com.android.support:support-v4:27.0.1'
-    implementation 'com.android.support:appcompat-v7:27.0.1'
-    implementation 'com.android.support:recyclerview-v7:27.0.1'
-    implementation 'com.android.support:design:27.0.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-
-    implementation 'com.jakewharton:butterknife:8.7.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
+plugins {
+    id 'com.android.application' version '9.5.1'
 }
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.1"
+    namespace = 'com.tooploox.ussd'
+    compileSdk = 36
 
-    dataBinding {
-        enabled = true
+    defaultConfig {
+        applicationId = 'com.tooploox.ussd'   // MUST stay identical to the published app
+        minSdk = 23
+        targetSdk = 36
+        versionCode = 3                       // > 2, the last released value
+        versionName = '0.3'
+    }
+
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     signingConfigs {
         release {
-            storeFile file(System.getProperty("user.home") + "/.android/dmax.keystore")
-            storePassword keystorePassword
-            keyAlias "dmax"
-            keyPassword keystorePassword
+            def ksPassword = providers.gradleProperty('keystorePassword')
+                    .orElse(providers.environmentVariable('KEYSTORE_PASSWORD')).getOrNull()
+            def ksFile = file(providers.environmentVariable('KEYSTORE_FILE')
+                    .orElse(System.getProperty('user.home') + '/.android/dmax.keystore').get())
+            if (ksPassword != null && ksFile.exists()) {
+                storeFile = ksFile
+                storePassword = ksPassword
+                keyAlias = 'dmax'
+                keyPassword = ksPassword
+            }
         }
     }
 
     buildTypes {
         release {
-            signingConfig signingConfigs.release
-            minifyEnabled true
-            shrinkResources false
-            proguardFile 'proguard-android.txt'
+            // Only sign when credentials are available (CI debug builds and forks keep working)
+            if (signingConfigs.release.storeFile != null) {
+                signingConfig = signingConfigs.release
+            }
+            minifyEnabled = true
+            shrinkResources = false
+            proguardFiles 'proguard-android.txt'
         }
     }
 
-    defaultConfig {
-        versionCode 2
-        versionName "0.2"
-        minSdkVersion 16
-        targetSdkVersion 27
+    lint {
+        abortOnError = false                // temporary; replace with lint-baseline.xml once warnings are triaged
     }
+}
 
-    lintOptions {
-        abortOnError false
-    }
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.8.0'
+    implementation 'com.google.android.material:material:1.14.0'
+    implementation 'androidx.recyclerview:recyclerview:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.2'
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0'
 }
