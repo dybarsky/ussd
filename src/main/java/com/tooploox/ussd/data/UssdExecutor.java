@@ -11,4 +11,6 @@ public interface UssdExecutor {
     void run(Ussd ussd);
 
     void setResponse(String result);
+
+    boolean hasPending();
 }

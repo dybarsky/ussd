@@ -39,6 +39,11 @@ public class UssdRunner implements UssdExecutor {
     }
 
     @Override
+    public boolean hasPending() {
+        return pendingUssd != null;
+    }
+
+    @Override
     public void setResponse(String result) {
         if (pendingUssd != null) {
             pendingUssd.setResponse(result);
