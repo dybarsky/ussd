@@ -6,13 +6,13 @@
     <application
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".App">
+        android:name=".App"
+        android:theme="@style/Theme.Ussd">
 
         <activity
             android:name=".ui.UssdListActivity"
             android:label="@string/app_name"
-            android:icon="@mipmap/ic_launcher"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:icon="@mipmap/ic_launcher">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -22,8 +22,7 @@
         </activity>
 
         <activity
-            android:name=".ui.SetupActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:name=".ui.SetupActivity" />
 
         <service
             android:name=".accessibility.UssdAccessibilityService"

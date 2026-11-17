@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- App-wide theme. Material components (e.g. the FAB) require a Material 3 theme.
+         colorAccent from the old AppCompat theme is replaced by colorSecondary. -->
+    <style name="Theme.Ussd" parent="Theme.Material3.DayNight.NoActionBar" />
+
+</resources>
