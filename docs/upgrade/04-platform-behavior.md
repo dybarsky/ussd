@@ -1,5 +1,14 @@
 # 04 — Platform behaviour: targetSdk 27 → 36
 
+> **Status: implemented in code, device verification open.**
+> Manifest: "Declare android:exported and backup policy in manifest" (c276ecd) plus `package` removal (d0bdd1c) and
+> application-level theme (6ec2a46). Edge-to-edge: "Handle edge-to-edge insets on targetSdk 36" (77ee47e).
+> Service hardening: "Harden accessibility service against null nodes and stray dialogs" (91de773). Storage
+> robustness: "Skip unreadable entries when loading stored USSD codes" (062dcbf). Policy text: "Align privacy policy
+> with actual app behavior" (faf7ab9). **Not done / not verified:** adaptive/monochrome icon, `dataExtractionRules`,
+> `sendUssdRequest` executor, any test on a real SIM/OEM device, Play Console declarations, visual check of insets on
+> gesture vs 3-button navigation, large screens, predictive back.
+
 Raising `targetSdk` opts the app into every behaviour change between API 28 and API 36. This file lists those
 that touch **this** app (manifest, UI, accessibility service, telephony). Items marked **BLOCKER** stop the build or
 the install.
@@ -15,6 +24,11 @@ the install.
 | 5 | Add `android:allowBackup`/`android:dataExtractionRules` + `android:fullBackupContent` decisions | Targeting 31+ lint warns; the app stores user codes in SharedPreferences — decide whether they should be backed up (note serialized-object compatibility) |
 | 6 | Add `android:roundIcon` + adaptive icon (`mipmap-anydpi-v26/ic_launcher.xml`, monochrome layer for themed icons on Android 13+) | Current icons are PNG-only; optional but expected |
 | 7 | Consider `android:supportsRtl="true"` | Lint/RTL; layouts use start/end after cleanup |
+
+Item status: 1–4 and 7 **done**; 5 decided as `allowBackup="false"` (no `dataExtractionRules`; lint reports
+`DataExtractionRules`, baselined); 6 **not done** (PNG launcher icon only). The committed manifest follows this
+skeleton, with `android:label` and `android:icon` also on the launcher activity (lint `RedundantLabel`, baselined)
+and an XML comment explaining `allowBackup`.
 
 Target manifest skeleton:
 ```xml
@@ -57,6 +71,11 @@ Affected screens:
   gesture/nav bar.
 - `activity_setup.xml`: top content will sit under the status bar (no toolbar, fixed top margins).
 
+**Status: done (77ee47e)** in both activities: `EdgeToEdge.enable(this)` before `super.onCreate`, then
+`systemBars | displayCutout` insets via `ViewCompat.setOnApplyWindowInsetsListener` (root padding in `SetupActivity`;
+list padding + FAB margin in `UssdListActivity`), insets consumed. Not verified visually on 3-button navigation,
+tablets or foldables.
+
 Fix: call `EdgeToEdge.enable(this)` (`androidx.activity`) in `onCreate` before `setContentView`, and apply insets,
 e.g. `ViewCompat.setOnApplyWindowInsetsListener(root, …)` to add system-bar padding to the root/list
 (`clipToPadding=false` on the RecyclerView) and margin to the FAB. Dialog (`AlertDialog`) needs nothing.
@@ -83,7 +102,10 @@ official guide ("Display content edge-to-edge in views").
 `UssdAccessibilityService` relies on: package `com.android.phone`, view ids `android:id/message` /
 `android:id/button1`, `TYPE_WINDOW_STATE_CHANGED`. Considerations when targeting current Android:
 
-1. **Robustness fixes (cheap, do them in Phase 3):**
+1. **Robustness fixes (cheap, do them in Phase 3)** — all four **done in 91de773**: null checks on event, source,
+   node lists and text; `UssdExecutor.hasPending()` (implemented in `UssdRunner`) gates the service;
+   `flagReportViewIds` and `notificationTimeout=100` added to `service_config.xml`. Their effect on a real device
+   (view-id lookup, duplicate events) is **unverified**. Original list:
    - null-check `event.getSource()` and `getText()`;
    - only act when a USSD run is pending (`pendingUssd != null`) so unrelated phone-package dialogs aren't dismissed;
    - add `android:accessibilityFlags="flagReportViewIds"` and verify view-id lookup on a real device (the
@@ -114,12 +136,17 @@ official guide ("Display content edge-to-edge in views").
   choosing 36 vs 37).
 - `CALL_PHONE` is a "dangerous" permission but not in the SMS/Call-log restricted group; still declare its use in the
   Data safety form.
-- `POLICY.md` currently states the app collects IP addresses, page visits, location and shares anonymised data with
+- **Status:** `POLICY.md` was rewritten in faf7ab9 (no data collected, local storage only, CALL_PHONE and
+  accessibility use described). The Play Console declaration, Data safety form and target-API check are **open**.
+  Original finding: `POLICY.md` stated the app collects IP addresses, page visits, location and shares anonymised data with
   third parties — none of this exists in the code (no `INTERNET`, no location permission, no analytics SDK).
   Rewrite it to say the app stores USSD codes and replies locally only, uses CALL_PHONE to dial, and reads the
   system USSD dialog through the accessibility service. Keep the URL stable if Play already references it.
 
 ## 6. Data compatibility on update (from context.md)
+Status: items 1–3 done (574984d pinned UID `-2632603246578927450L`; `-keep` rule in `proguard-rules.pro`; null entries
+skipped in 062dcbf). Item 4 (upgrade test over the real old APK) is **open**.
+
 Updating over an existing install keeps SharedPreferences. Therefore:
 1. Pin `Ussd.serialVersionUID` to the value computed from the **last released** build before touching tooling.
 2. Keep class name/package/fields; keep `-keep class …Ussd` rule if obfuscation is enabled.

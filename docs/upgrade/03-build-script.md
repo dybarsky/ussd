@@ -1,9 +1,14 @@
 # 03 — Build script migration
 
+> **Status: done** — build script in d0bdd1c; R8 in "Switch to R8 optimize defaults with keep rule for Ussd"
+> (4513802); lint in "Enable lint enforcement with baseline" (0e195f3). The sample in section 3 now matches the
+> committed `build.gradle` except for comments. Sections 1, 6 and 7 keep the original analysis; "Current" means the
+> pre-upgrade state (tag `0.2`).
+
 Concrete before/after for `build.gradle`, `gradle.properties`, signing, R8/ProGuard and lint. Groovy DSL is kept
 to minimise the diff; a Kotlin-DSL + version-catalog variant is noted at the end.
 
-## 1. Current `build.gradle` — problems line by line
+## 1. Original `build.gradle` (tag `0.2`) — problems line by line
 
 | Current | Problem | Fix |
 |---|---|---|
@@ -24,6 +29,12 @@ to minimise the diff; a Kotlin-DSL + version-catalog variant is noted at the end
 See [01-build-tooling.md §5](01-build-tooling.md#5-settingsgradle-new-required).
 
 ## 3. Target `build.gradle` (flat layout, Groovy)
+Differences between the first draft of this sample and the committed file: release uses
+`proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'` (as drafted), and
+the `lint {}` block now sets `baseline = file('lint-baseline.xml')` with `abortOnError = true` (the draft had
+`abortOnError = false` as a temporary step). The two explanatory comments on `minifyEnabled`/`shrinkResources`
+were dropped. Below is the committed version.
+
 ```groovy
 plugins {
     id 'com.android.application' version '9.5.1'
@@ -72,15 +83,15 @@ android {
             if (signingConfigs.release.storeFile != null) {
                 signingConfig = signingConfigs.release
             }
-            minifyEnabled = true            // AGP 9.3+ also offers `optimization { enable = true }`; use it if the
-                                            // Groovy property is flagged deprecated in your AGP version
-            shrinkResources = false         // try true after verifying the release build
+            minifyEnabled = true
+            shrinkResources = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
     lint {
-        abortOnError = false                // temporary; replace with lint-baseline.xml once warnings are triaged
+        baseline = file('lint-baseline.xml')   // pre-existing findings; new issues fail the build
+        abortOnError = true
     }
 }
 
@@ -96,14 +107,16 @@ Notes:
 - Do **not** add `repositories {}` here (settings uses `FAIL_ON_PROJECT_REPOS`).
 - `versionCode`/`versionName`: bump above the last published build before shipping.
 - Verify the exact Groovy property names against deprecation warnings during the first sync — AGP 9.x is still
-  moving `minifyEnabled`/`shrinkResources` toward the new `optimization {}` block. Warnings are fine; errors mean
-  rename.
+  moving `minifyEnabled`/`shrinkResources` toward the new `optimization {}` block (AGP 9.3+ offers
+  `optimization { enable = true }`). Warnings are fine; errors mean rename. The committed file still uses
+  `minifyEnabled`/`shrinkResources`; whether AGP 9.5.1 prints a deprecation warning for them was not checked here.
+- `shrinkResources = false` is intentionally kept; lint reports it as `NotShrinkingResources` (baselined).
 - Once DataBinding is the only generated-binding feature you still need, you may drop `viewBinding` and use
   `UssdListItemBinding` + view binding only for the activity layouts — both can coexist.
 
 ## 4. `gradle.properties`
-Current content is only `keystorePassword=` (an empty committed placeholder). **Remove it** and keep secrets in
-`~/.gradle/gradle.properties` or CI env vars. Target:
+Original content was only `keystorePassword=` (an empty committed placeholder). **Done (d0bdd1c):** removed;
+secrets belong in `~/.gradle/gradle.properties` or CI env vars. The committed file is exactly:
 ```properties
 org.gradle.jvmargs=-Xmx2g -Dfile.encoding=UTF-8
 org.gradle.caching=true
@@ -114,11 +127,17 @@ Do not add: `android.enableJetifier`, `android.nonFinalResIds=false`, `android.n
 `android.builtInKotlin=false`, `android.disallowKotlinSourceSets=false`.
 
 ## 5. Manifest namespace and application id
-Remove `package="com.tooploox.ussd"` from `src/main/AndroidManifest.xml` (it becomes `namespace`). Manifest changes
+Status: done (d0bdd1c). Remove `package="com.tooploox.ussd"` from `src/main/AndroidManifest.xml` (it becomes `namespace`). Manifest changes
 required by targetSdk are in [04](04-platform-behavior.md#1-manifest-fixes-blocking).
 
 ## 6. R8 / ProGuard
-Current `proguard-android.txt` is a 2017 copy of the SDK default with extra lines:
+**Status: done (4513802).** `proguard-android.txt` was deleted (not renamed; its content was dropped) and
+`proguard-rules.pro` was added with the two `Ussd` rules below plus an explanatory comment (the "Accessibility
+service + data binding…" comment line from the draft is not in the file). R8 now optimizes and obfuscates the
+release build, and inlines `UssdRunner` into its callers (normal). Release behaviour with data from the real old
+APK is **not verified**. Original analysis follows.
+
+The original `proguard-android.txt` was a 2017 copy of the SDK default with extra lines:
 `-dontoptimize`, `-dontpreverify`, `-dontobfuscate`, `-dontwarn com.tooploox.ussd.ui.**`, `-dontwarn android.support.**`.
 
 Recommended replacement `proguard-rules.pro` (and `git mv proguard-android.txt proguard-rules.pro`, since the
@@ -145,6 +164,11 @@ Other points:
 - Enable `shrinkResources = true` only after confirming nothing is looked up by name (`getIdentifier`) — nothing is.
 
 ## 7. Lint
+**Status: done (0e195f3).** `lint-baseline.xml` (generated by lint 9.5.1) holds 10 deferred findings, listed in
+[context.md](../context.md#deferred-lint-findings-lint-baselinexml-generated-by-lint-951); `abortOnError = true`;
+`lintDebug` passes. Cheap findings were fixed instead of baselined (dialog constraints/labels, FAB content description,
+setup icons' accessibility, two unused resources). CI runs `lintDebug`. Original analysis:
+
 `abortOnError false` hides everything. After the migration run `./gradlew lint`, then generate a baseline with
 `lint { baseline = file('lint-baseline.xml') }` and flip `abortOnError` back to `true`. Expect new findings:
 `ExportedService`, `MissingPermission` (already suppressed in `UssdRunner`), `UnusedResources`,

@@ -1,10 +1,16 @@
 # 02 — Dependencies and library migration
 
-Versions verified against Google Maven / Maven Central on 2026-11-17.
+> **Status: done.** Imports: "Migrate Java imports from Support Library to AndroidX" (6b338ae). Layouts/theme:
+> "Migrate layouts and theme to AndroidX and Material 3" (6ec2a46). ButterKnife → ViewBinding: "Replace ButterKnife
+> with ViewBinding" (16e6304). Dependencies block: d0bdd1c. The repo's `dependencies {}` is identical to the
+> block in section 3. `LocalBroadcastManager` was kept (section 6, option 1).
+
+Versions verified against Google Maven / Maven Central on 2026-11-17. Tables in sections 1, 4 and 5 describe the
+**original** (pre-upgrade) state and the mapping that was applied.
 
 ## 1. Inventory
 
-| Current coordinate | Role in the app | Target |
+| Original coordinate | Role in the app | Target (now in the repo) |
 |---|---|---|
 | `com.android.support:support-v4:27.0.1` | `ActivityCompat`, `LocalBroadcastManager` | `androidx.core:core` (transitive via appcompat) + `androidx.localbroadcastmanager:localbroadcastmanager:1.1.0` (or remove) |
 | `com.android.support:appcompat-v7:27.0.1` | `AppCompatActivity`, `AlertDialog`, themes | `androidx.appcompat:appcompat:1.8.0` |
@@ -97,12 +103,21 @@ Create `res/values/themes.xml`:
     </style>
 </resources>
 ```
-and set `android:theme="@style/Theme.Ussd"` on `<application>` (instead of per-activity). Replace
+and set `android:theme="@style/Theme.Ussd"` on `<application>` (instead of per-activity). **Done (6ec2a46):**
+`themes.xml` defines `Theme.Ussd` with parent `Theme.Material3.DayNight.NoActionBar` and **no overrides** (the app
+has no brand colours; the Material 3 default accent changed the look, see context.md quirk 16). Original text: Replace
 `?attr/colorAccent` usages (`ussd_list_item.xml`, FAB `rippleColor`) with `?attr/colorSecondary`/`colorPrimary`
 (Material 3 no longer defines `colorAccent` semantics). `Widget.AppCompat.Button.Colored` still resolves
 (M3 themes inherit AppCompat), but `Widget.Material3.Button` is the natural replacement.
 
 ## 5. ButterKnife → ViewBinding
+**Status: done (16e6304).** `buildFeatures { viewBinding = true; dataBinding = true }` is in `build.gradle`;
+`SetupActivity` uses `ActivitySetupBinding`; `UssdListActivity` uses `ActivityUssdListBinding` and
+`DialogAddUssdBinding`. Deviations from the sketch below: `UiEventsReactor` was **kept** as an inner class (it
+holds the click callbacks; `ActivityViews`, `DialogViews`, `Logic` were removed), and `UssdListAdapter` still
+uses `DataBindingUtil.inflate` + `setVariable(BR.ussd, …)` rather than `UssdListItemBinding` (the optional
+change was not made). The rest of this section is the original analysis.
+
 ButterKnife is archived/deprecated. Its annotations need `R.id.*` to be compile-time constants; AGP 8+ generates
 **non-final** `R` fields by default (AGP 9 enforces app compile-time non-final R), so `@BindView(R.id.x)` fails
 with "attribute value must be a constant". Stopgap `android.nonFinalResIds=false` is possible on AGP 8 but is
@@ -139,11 +154,12 @@ ids in camelCase). `ussd_list_item.xml` is a `<layout>` (DataBinding) file and a
 `UssdListItemBinding`; the adapter can use it directly instead of `DataBindingUtil.inflate` +
 `setVariable(BR.ussd, …)`.
 
-The inner holder classes (`ActivityViews`, `DialogViews`, `Logic`, `UiEventsReactor`) exist only to serve ButterKnife and
-can be flattened. If you prefer minimal diff, a temporary fallback is ButterKnife **10.2.3** (AndroidX) plus
+The inner holder classes (`ActivityViews`, `DialogViews`, `Logic`, `UiEventsReactor`) existed only to serve ButterKnife and
+could be flattened (done, except `UiEventsReactor`, which was kept). If you prefer minimal diff, a temporary fallback is ButterKnife **10.2.3** (AndroidX) plus
 `android.nonFinalResIds=false` on AGP ≤ 8 — **not available as a durable option on AGP 9**.
 
 ## 6. LocalBroadcastManager (deprecated)
+Status: option 1 taken — `androidx.localbroadcastmanager:1.1.0` is still a dependency and `EventBus` is unchanged.
 `EventBus` is a thin wrapper used for one event (`USSD_RESULT_RECEIVED`). It works unchanged with
 `androidx.localbroadcastmanager:1.1.0`, but the artifact is deprecated and unmaintained. Options, cheapest first:
 1. Keep it for the upgrade (zero risk), mark it with a TODO.
