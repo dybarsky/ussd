@@ -1,6 +1,6 @@
 package com.tooploox.ussd.utils;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * Maksym Dybarskyi | maksym.dybarskyi@tooploox.com
