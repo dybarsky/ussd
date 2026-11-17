@@ -7,59 +7,31 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 
 import com.tooploox.ussd.App;
-import com.tooploox.ussd.R;
+import com.tooploox.ussd.databinding.ActivityUssdListBinding;
+import com.tooploox.ussd.databinding.DialogAddUssdBinding;
 import com.tooploox.ussd.domain.Ussd;
 import com.tooploox.ussd.utils.EventBus;
 import com.tooploox.ussd.utils.Predicate;
 import com.tooploox.ussd.utils.SetupHelper;
 import com.tooploox.ussd.utils.Strings;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class UssdListActivity extends AppCompatActivity {
-
-    class ActivityViews {
-
-        @BindView(R.id.recycler_view)
-        RecyclerView recyclerView;
-    }
-
-    class DialogViews {
-
-        @BindView(R.id.dialog_et_ussd_query)
-        EditText etUssdQuery;
-    }
-
-    class Logic {
-
-        private Predicate<EditText> notEmptyPredicate =
-                et -> et.getText() != null && !Strings.isNullOrEmpty(et.getText().toString());
-
-        boolean isInputValid() {
-            return notEmptyPredicate.apply(dialogViews.etUssdQuery);
-        }
-
-    }
 
     public class UiEventsReactor {
 
-        @OnClick(R.id.button_add)
         public void onAddUssdButtonClicked(View button) {
             showAddUssdDialog();
         }
 
         public void onDialogDoneButtonClicked(DialogInterface dialog, int which) {
-            if (!logic.isInputValid())
+            if (!isInputValid())
                 return;
 
-            presenter.addUssd(dialogViews.etUssdQuery.getText().toString());
+            presenter.addUssd(dialogBinding.dialogEtUssdQuery.getText().toString());
             dialog.dismiss();
         }
 
@@ -68,24 +40,25 @@ public class UssdListActivity extends AppCompatActivity {
         }
     }
 
-    private Logic logic = new Logic();
-    private ActivityViews activityViews = new ActivityViews();
-    private DialogViews dialogViews = new DialogViews();
+    private Predicate<EditText> notEmptyPredicate =
+            et -> et.getText() != null && !Strings.isNullOrEmpty(et.getText().toString());
+
+    private ActivityUssdListBinding binding;
+    private DialogAddUssdBinding dialogBinding;
     private UiEventsReactor eventsReactor = new UiEventsReactor();
-    private UssdListAdapter adapter = new UssdListAdapter(view -> activityViews.recyclerView.getChildAdapterPosition(view), eventsReactor);
+    private UssdListAdapter adapter = new UssdListAdapter(view -> binding.recyclerView.getChildAdapterPosition(view), eventsReactor);
     private UssdListPresenter presenter = new UssdListPresenter(App.INSTANCE.ussdStorage, adapter, App.INSTANCE.ussdExecutor);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_ussd_list);
+        binding = ActivityUssdListBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        ButterKnife.bind(activityViews, this);
-        ButterKnife.bind(eventsReactor, this);
-
-        activityViews.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        activityViews.recyclerView.setAdapter(adapter);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerView.setAdapter(adapter);
+        binding.buttonAdd.setOnClickListener(eventsReactor::onAddUssdButtonClicked);
     }
 
     @Override
@@ -108,14 +81,17 @@ public class UssdListActivity extends AppCompatActivity {
     }
 
     public void showAddUssdDialog() {
+        dialogBinding = DialogAddUssdBinding.inflate(getLayoutInflater());
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setView(R.layout.dialog_add_ussd)
+                .setView(dialogBinding.getRoot())
                 .setCancelable(true)
                 .setPositiveButton(android.R.string.ok, eventsReactor::onDialogDoneButtonClicked)
                 .create();
         dialog.show();
+    }
 
-        ButterKnife.bind(dialogViews, dialog);
+    private boolean isInputValid() {
+        return notEmptyPredicate.apply(dialogBinding.dialogEtUssdQuery);
     }
 
     private void checkSetupConditions() {

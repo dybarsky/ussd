@@ -6,16 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.tooploox.ussd.R;
+import com.tooploox.ussd.databinding.ActivitySetupBinding;
 import com.tooploox.ussd.utils.SetupHelper;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Maksym Dybarskyi | maksym.dybarskyi@tooploox.com
@@ -23,27 +17,14 @@ import butterknife.OnClick;
  */
 public class SetupActivity extends AppCompatActivity {
 
-    @BindView(R.id.permissions_status)
-    ImageView ivPermissionStatus;
-
-    @BindView(R.id.accessibility_status)
-    ImageView ivAccessibilityStatus;
-
-    @BindView(R.id.permissions_description)
-    TextView tvPermissionDescription;
-
-    @BindView(R.id.accessibility_description)
-    TextView tvAccessibilityDescription;
-
-    @BindView(R.id.next)
-    Button bNext;
+    private ActivitySetupBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_setup);
-        ButterKnife.bind(this);
+        binding = ActivitySetupBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
     }
 
     @Override
@@ -64,38 +45,38 @@ public class SetupActivity extends AppCompatActivity {
 
     private void checkPermissionsAndUpdateUI() {
         if (SetupHelper.isPermissionGranted(this)) {
-            ivPermissionStatus.setImageResource(R.drawable.ic_enabled);
-            tvPermissionDescription.setText(R.string.permission_description_enabled);
-            tvPermissionDescription.setOnClickListener(null);
+            binding.permissionsStatus.setImageResource(R.drawable.ic_enabled);
+            binding.permissionsDescription.setText(R.string.permission_description_enabled);
+            binding.permissionsDescription.setOnClickListener(null);
         } else {
-            ivPermissionStatus.setImageResource(R.drawable.ic_disabled);
-            tvPermissionDescription.setText(R.string.permission_description_disabled);
-            tvPermissionDescription.setOnClickListener(v -> SetupHelper.requestPermissions(this));
+            binding.permissionsStatus.setImageResource(R.drawable.ic_disabled);
+            binding.permissionsDescription.setText(R.string.permission_description_disabled);
+            binding.permissionsDescription.setOnClickListener(v -> SetupHelper.requestPermissions(this));
         }
     }
 
     private void checkAccessibilityAndUpdateUI() {
         if (SetupHelper.isAccessibilityServiceEnabled(this)) {
-            ivAccessibilityStatus.setImageResource(R.drawable.ic_enabled);
-            tvAccessibilityDescription.setText(R.string.accessibility_description_enabled);
-            tvAccessibilityDescription.setOnClickListener(null);
+            binding.accessibilityStatus.setImageResource(R.drawable.ic_enabled);
+            binding.accessibilityDescription.setText(R.string.accessibility_description_enabled);
+            binding.accessibilityDescription.setOnClickListener(null);
         } else {
-            ivAccessibilityStatus.setImageResource(R.drawable.ic_disabled);
-            tvAccessibilityDescription.setText(R.string.accessibility_description_disabled);
-            tvAccessibilityDescription.setOnClickListener(v -> SetupHelper.openAccessibilitySettings(this));
+            binding.accessibilityStatus.setImageResource(R.drawable.ic_disabled);
+            binding.accessibilityDescription.setText(R.string.accessibility_description_disabled);
+            binding.accessibilityDescription.setOnClickListener(v -> SetupHelper.openAccessibilitySettings(this));
         }
     }
 
     private void checkNextButtonAvailability() {
         if (SetupHelper.isPermissionGranted(this) && SetupHelper.isAccessibilityServiceEnabled(this)) {
-            bNext.setVisibility(View.VISIBLE);
-            bNext.setOnClickListener(v -> {
+            binding.next.setVisibility(View.VISIBLE);
+            binding.next.setOnClickListener(v -> {
                 Intent intent = new Intent(this, UssdListActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             });
         } else {
-            bNext.setVisibility(View.GONE);
+            binding.next.setVisibility(View.GONE);
         }
 
     }
