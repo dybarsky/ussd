@@ -126,8 +126,10 @@ Open:
 3. The add-USSD dialog does not auto-focus the input / show the keyboard. (On an API 37 emulator, Gboard's phone
    dialpad did not type `*`/`#`; on the maintainer's physical phone Gboard types them fine, so nothing was changed.)
 4. Material 3 default colours changed the look (the app never defined brand colours).
-5. `UssdRunner` pending state is in memory only (reply after process death is dropped and the dialog is not
-   auto-dismissed); `run` silently returns when `CALL_PHONE` is missing.
+5. `UssdRunner` pending state is in memory only and expires after 30 s (a reply after process death or later
+   than 30 s is not captured and the dialog is not auto-dismissed); `run` silently returns when `CALL_PHONE` is
+   missing. Tiny gap: if the window expires between the service's `hasPending()` check and `setResponse()`, the
+   service still fires the refresh event and clicks the dialog without storing the reply.
 6. `lint-baseline.xml` holds 10 deferred findings (see docs/context.md).
 
 Fixed in the upgrade (history kept in docs/context.md): service NPEs / acting on any phone dialog, null entries and

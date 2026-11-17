@@ -59,9 +59,12 @@ persisted — see persistence below.
 - `UssdExecutor`: `run(Ussd)`, `setResponse(String)` and `hasPending()`.
   - `UssdRunner.run`: bails out if `CALL_PHONE` is not granted; stores `pendingUssd = ussd.clone()`; builds
     `tel:` URI with `#` percent-encoded; fires `Intent.ACTION_CALL` with `FLAG_ACTIVITY_NEW_TASK`.
-  - `UssdRunner.hasPending`: `pendingUssd != null`; the accessibility service uses it as a gate.
-  - `UssdRunner.setResponse`: if a `pendingUssd` exists, sets its response, persists via
-    `App.INSTANCE.ussdStorage.updateUssd`, clears pending. **Pending state is in memory only.**
+  - `UssdRunner.hasPending`: true while a `pendingUssd` exists and at most `PENDING_TIMEOUT_MS` (30 s, measured with
+    `SystemClock.elapsedRealtime()` from `run()`) have passed; otherwise it clears the pending run and returns false.
+    The accessibility service uses it as a gate.
+  - `UssdRunner.setResponse`: if `hasPending()`, sets the response, persists via
+    `App.INSTANCE.ussdStorage.updateUssd`, clears pending; a late reply is ignored. **Pending state is in memory
+    only.**
 
 ### Accessibility — `UssdAccessibilityService`
 Declared in the manifest with `BIND_ACCESSIBILITY_SERVICE` and configured by `res/xml/service_config.xml`:
@@ -133,8 +136,9 @@ UssdAccessibilityService.onAccessibilityEvent  ◄──────────
 ## Threading / lifecycle notes
 - All work is synchronous on the main thread (SharedPreferences `apply()` is async-on-disk but reads are sync).
 - Accessibility callbacks arrive on the main thread; `App.INSTANCE` must be non-null (it is, same process).
-- Process death between `run()` and the accessibility callback drops the reply (`pendingUssd` is lost); because
-  the service now requires `hasPending()`, the dialog is then not auto-dismissed either.
+- Process death between `run()` and the accessibility callback drops the reply (`pendingUssd` is lost), and so does
+  a reply later than 30 s after `run()`; because the service requires `hasPending()`, the dialog is then not
+  auto-dismissed either.
 - No configuration-change handling beyond defaults; state is reloaded in `onResume`.
 
 ## Build-time architecture

@@ -22,9 +22,11 @@ text, hence this app's accessibility-service trick. The app is a personal utilit
   Not verified on any real SIM device or OEM build.
 - `service_config.xml` now sets `android:accessibilityFlags="flagReportViewIds"` (needed for lookups by view id)
   and `android:notificationTimeout="100"` (commit 91de773). Effect on real devices is not verified.
-- The service only reads/dismisses a dialog while `UssdExecutor.hasPending()` is true, i.e. after the app itself
-  started a run in this process. Unrelated `com.android.phone` dialogs are ignored. Consequence: if the process
-  was killed between run and reply, the dialog is not auto-dismissed.
+- The service only reads/dismisses a dialog while `UssdExecutor.hasPending()` is true, i.e. within 30 s after the
+  app itself started a run in this process (`UssdRunner.PENDING_TIMEOUT_MS`; a run that never gets a reply expires
+  instead of staying pending forever, so a stale run can no longer swallow an unrelated dialog). Unrelated
+  `com.android.phone` dialogs are ignored. Consequences: if the process was killed between run and reply, or the
+  reply arrives later than 30 s, the reply is not captured and the dialog is not auto-dismissed.
 - minSdk is 23, so `findAccessibilityNodeInfosByViewId` (API 18+) needs no `@SuppressLint("NewApi")` any more
   (removed).
 - Android 13+ restricted settings can grey out the accessibility service for sideloaded APKs (see
@@ -56,7 +58,7 @@ Original descriptions are kept for history.
 | # | Where | Issue | Severity | Status |
 |---|---|---|---|---|
 | 1 | `UssdAccessibilityService.onAccessibilityEvent` | `event.getSource()` can be `null` → NPE; `getText()` can be `null` → NPE on `toString()`; source nodes are never `recycle()`d (deprecated no-op on API 33+) | Medium | **Fixed** — "Harden accessibility service against null nodes and stray dialogs" (91de773); null checks added; nodes still not recycled (no-op, deliberate) |
-| 2 | `UssdRunner` | `pendingUssd` is in-memory only; replies after process death are dropped; a second tap overwrites the first | Low | Open (now also means the dialog is not auto-dismissed after process death) |
+| 2 | `UssdRunner` | `pendingUssd` is in-memory only; replies after process death are dropped; a second tap overwrites the first. A run that got no reply used to stay pending forever (the service would then read and dismiss any later phone dialog with `message`+`button1`); the pending window is now bounded to 30 s | Low | Partial: stale-pending fixed (30 s expiry, JVM-harness verified); in-memory loss and 30 s limit remain (reply after 30 s or process death is not captured and the dialog is not auto-dismissed) |
 | 3 | `UssdRunner.run` | Silently returns when permission is missing (no user feedback) | Low | Open |
 | 4 | `EventBus.unsubscribe` | `unregisterReceiver(null)` if never subscribed; map holds one receiver per event | Low | Open |
 | 5 | `Serializer` / `UssdSimpleStorage` | Null entries on deserialization failure; unstable order | Medium | **Fixed** — "Skip unreadable entries when loading stored USSD codes" (062dcbf); `Serializer` itself unchanged |

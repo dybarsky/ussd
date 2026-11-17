@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.SystemClock;
 
 import com.tooploox.ussd.App;
 import com.tooploox.ussd.domain.Ussd;
@@ -17,8 +18,16 @@ public class UssdRunner implements UssdExecutor {
 
     private static final String ENCODED_HASH = Uri.encode("#");
 
+    // A run that never produces a capturable reply (failed call, cancelled session, a different dialog
+    // layout, ...) must not stay pending forever, otherwise the accessibility service would later read and
+    // dismiss an unrelated com.android.phone dialog and store its text as the reply to a stale code.
+    // USSD replies can take several seconds on slow networks, so 30 s is generous, but the window is
+    // kept small so the service only acts on dialogs that belong to a run the user just started.
+    private static final long PENDING_TIMEOUT_MS = 30_000;
+
     private Context context;
     private Ussd pendingUssd;
+    private long pendingStartedAt;
 
     public UssdRunner(Context context) {
         this.context = context;
@@ -31,6 +40,7 @@ public class UssdRunner implements UssdExecutor {
             return;
         }
         pendingUssd = ussd.clone();
+        pendingStartedAt = SystemClock.elapsedRealtime();
         String ussdCode = ussd.getCode().replaceAll("#", ENCODED_HASH);
         Uri uri = Uri.parse("tel:" + ussdCode);
         Intent intent = new Intent(Intent.ACTION_CALL, uri);
@@ -40,12 +50,19 @@ public class UssdRunner implements UssdExecutor {
 
     @Override
     public boolean hasPending() {
-        return pendingUssd != null;
+        if (pendingUssd == null) {
+            return false;
+        }
+        if (SystemClock.elapsedRealtime() - pendingStartedAt > PENDING_TIMEOUT_MS) {
+            pendingUssd = null;
+            return false;
+        }
+        return true;
     }
 
     @Override
     public void setResponse(String result) {
-        if (pendingUssd != null) {
+        if (hasPending()) {
             pendingUssd.setResponse(result);
             App.INSTANCE.ussdStorage.updateUssd(pendingUssd);
             pendingUssd = null;
