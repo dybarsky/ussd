@@ -1,74 +1,61 @@
 **Privacy Policy**
 
-This privacy policy applies to the Accessibility service demo app (hereby referred to as "Application") for mobile devices that was created by Maksym Dybarskyi (hereby referred to as "Service Provider") as an Open Source service. This service is intended for use "AS IS".
+This privacy policy applies to the Accessibility service demo app (hereby referred to as "Application") for Android devices that was created by Maksym Dybarskyi (hereby referred to as "Service Provider") as an Open Source service under the MIT license. This service is intended for use "AS IS".
+
+In short: the Application keeps everything on your device. It has no Internet access, sends no data anywhere, and the Service Provider does not receive or hold any of your data.
 
 **Information Collection and Use**
 
-The Application collects information when you download and use it. This information may include information such as
+The Service Provider does not collect any information from you. The Application does not transmit any information off your device.
 
-*   Your device's Internet Protocol address (e.g. IP address)
-*   The pages of the Application that you visit, the time and date of your visit, the time spent on those pages
-*   The time spent on the Application
-*   The operating system you use on your mobile device
+The Application stores the following information locally on your device only, in the Application's private storage:
 
-The Application does not gather precise information about the location of your mobile device.
+*   The USSD codes (quick codes) that you add to the Application
+*   The last response text received for each of those codes
 
-The Application collects your device's location, which helps the Service Provider determine your approximate geographical location and make use of in below ways:
+This information is used only to display your saved codes and their last responses inside the Application. The Application does not request an account, and does not ask for your name, contacts, or any other personal information.
 
-*   Geolocation Services: The Service Provider utilizes location data to provide features such as personalized content, relevant recommendations, and location-based services.
-*   Analytics and Improvements: Aggregated and anonymized location data helps the Service Provider to analyze user behavior, identify trends, and improve the overall performance and functionality of the Application.
-*   Third-Party Services: Periodically, the Service Provider may transmit anonymized location data to external services. These services assist them in enhancing the Application and optimizing their offerings.
+The Application contains no advertising, no usage tracking, no crash reporting, and no tracking of where you are, and it does not use any third-party service. The only third-party code it includes is the open-source AndroidX and Material Components user interface libraries, and because the Application has no Internet permission, no code in it can send data off your device.
 
-The Service Provider may use the information you provided to contact you from time to time to provide you with important information, required notices and marketing promotions.
+**Permissions and Accessibility Service**
 
-For a better experience, while using the Application, the Service Provider may require you to provide us with certain personally identifiable information. The information that the Service Provider request will be retained by them and used as described in this privacy policy.
+*   **Phone (CALL_PHONE):** This is the only permission the Application declares. It is used to dial the USSD codes that you saved, when you tap one. The Application does not read your call history, contacts, or phone state.
+*   **Accessibility service:** When you run a saved USSD code, the Android system shows the operator's reply in a system dialog. The Application uses an Android AccessibilityService, restricted to the system phone package (com.android.phone), to read the text of that USSD response dialog and to click its dismiss (OK) button. This happens only while a run started from the Application is pending. The text read is stored locally on your device as the response for that code and is shown to you in the Application.
+
+The accessibility service does not read the content of any other app or screen, does not record keystrokes, and does not transmit anything. The text it reads is not shared with anyone. You must enable the service manually in your device's system accessibility settings, and you can disable it there at any time. Without it, the Application cannot capture USSD responses.
+
+When a USSD code is dialled, it is sent to your mobile network operator by your phone's normal telephony system, in the same way as if you had dialled it yourself. The Application itself does not send it anywhere. The operator's own privacy practices apply to that traffic.
 
 **Third Party Access**
 
-Only aggregated, anonymized data is periodically transmitted to external services to aid the Service Provider in improving the Application and their service. The Service Provider may share your information with third parties in the ways that are described in this privacy statement.
-
-Please note that the Application utilizes third-party services that have their own Privacy Policy about handling data. Below are the links to the Privacy Policy of the third-party service providers used by the Application:
-
-*   [Google Play Services](https://www.google.com/policies/privacy/)
-
-The Service Provider may disclose User Provided and Automatically Collected Information:
-
-*   as required by law, such as to comply with a subpoena, or similar legal process;
-*   when they believe in good faith that disclosure is necessary to protect their rights, protect your safety or the safety of others, investigate fraud, or respond to a government request;
-*   with their trusted services providers who work on their behalf, do not have an independent use of the information we disclose to them, and have agreed to adhere to the rules set forth in this privacy statement.
+The Service Provider does not share your information with anyone, because the Service Provider does not receive it. The Application has no Internet permission and does not send data to any third party.
 
 **Opt-Out Rights**
 
-You can stop all collection of information by the Application easily by uninstalling it. You may use the standard uninstall processes as may be available as part of your mobile device or via the mobile application marketplace or network.
+You can stop the Application from reading USSD response dialogs at any time by disabling its accessibility service in your device's system accessibility settings. You can revoke the phone permission in your device's app settings. You can also stop all use of the Application by uninstalling it, using the standard uninstall process of your device or app store.
 
 **Data Retention Policy**
 
-The Service Provider will retain User Provided data for as long as you use the Application and for a reasonable time thereafter. If you'd like them to delete User Provided Data that you have provided via the Application, please contact them at maxim.dybarskyy@gmail.com and they will respond in a reasonable time.
+The data described above stays on your device until you remove it. Uninstalling the Application or clearing its storage in your device's settings deletes all of its data. Automatic backup of the Application's data is disabled, so the Application does not back it up to the cloud. Because the Service Provider holds none of your data, there is nothing for the Service Provider to delete on your behalf.
 
 **Children**
 
-The Service Provider does not use the Application to knowingly solicit data from or market to children under the age of 13.
-
-The Application does not address anyone under the age of 13. The Service Provider does not knowingly collect personally identifiable information from children under 13 years of age. In the case the Service Provider discover that a child under 13 has provided personal information, the Service Provider will immediately delete this from their servers. If you are a parent or guardian and you are aware that your child has provided us with personal information, please contact the Service Provider (maxim.dybarskyy@gmail.com) so that they will be able to take the necessary actions.
+The Application does not address anyone under the age of 13, and the Service Provider does not knowingly collect any information from children or from anyone else.
 
 **Security**
 
-The Service Provider is concerned about safeguarding the confidentiality of your information. The Service Provider provides physical, electronic, and procedural safeguards to protect information the Service Provider processes and maintains.
+The Application's data is stored in app-private storage that is protected by the Android application sandbox, and it is never transmitted from your device. The protection of your device itself, such as a screen lock, is up to you.
 
 **Changes**
 
-This Privacy Policy may be updated from time to time for any reason. The Service Provider will notify you of any changes to the Privacy Policy by updating this page with the new Privacy Policy. You are advised to consult this Privacy Policy regularly for any changes, as continued use is deemed approval of all changes.
+This Privacy Policy may be updated from time to time. Any changes will be published by updating this page with the new Privacy Policy. You are advised to consult this Privacy Policy regularly for any changes.
 
-This privacy policy is effective as of 2025-01-30
+This privacy policy is effective as of 2026-11-17
 
 **Your Consent**
 
-By using the Application, you are consenting to the processing of your information as set forth in this Privacy Policy now and as amended by us.
+By using the Application, you are consenting to the handling of information as set forth in this Privacy Policy.
 
 **Contact Us**
 
-If you have any questions regarding privacy while using the Application, or have questions about the practices, please contact the Service Provider via email at maxim.dybarskyy@gmail.com.
-
-* * *
-
-This privacy policy page was generated by [App Privacy Policy Generator](https://app-privacy-policy-generator.nisrulz.com/)
+If you have any questions regarding privacy while using the Application, please contact the Service Provider via email at maxim.dybarskyy@gmail.com.
