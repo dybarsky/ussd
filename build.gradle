@@ -10,8 +10,8 @@ android {
         applicationId = 'com.tooploox.ussd'   // MUST stay identical to the published app
         minSdk = 23
         targetSdk = 36
-        versionCode = 3                       // > 2, the last released value
-        versionName = '0.3'
+        versionCode = 4                       // > 3, the last uploaded value
+        versionName = '0.4'
     }
 
     buildFeatures {
