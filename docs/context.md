@@ -1,19 +1,33 @@
 # Context, domain knowledge and gotchas
 
-Status as of 2026-11-17 on branch `modernize/agp-9` (commits referenced by hash are on that branch).
+Status as of 2026-11-18 (see git log; the `modernize/agp-9` branch has been merged) (commits referenced by hash are on that branch).
 
 ## Domain
 USSD codes ("quick codes", `*123#`) are short GSM session commands to the mobile operator (balance, tariff,
 top-up). The OS shows the reply in a system dialog. Android has historically offered no easy API to read that
-text, hence this app's accessibility-service trick. The app is a personal utility/demo, not a commercial product.
+text, hence this app's accessibility-service trick. The app is a technical demo of the AccessibilityService API (made to showcase the developer's skills); USSD is the example use case, and the in-app intro, Play listing, service description and POLICY.md all say so. Keep them consistent.
 
 ## Permissions and special access
 
 | Item | Declared where | Notes |
 |---|---|---|
-| `android.permission.CALL_PHONE` | manifest | Runtime permission requested from `SetupActivity` via `SetupHelper.requestPermissions`. Needed for `Intent.ACTION_CALL`. |
+| `android.permission.CALL_PHONE` | manifest | Runtime permission requested from wizard step 2 in `SetupActivity` via `SetupHelper.requestPermissions`. Needed for `Intent.ACTION_CALL`. |
 | Accessibility service | manifest `<service>` (`exported=true`, protected by `BIND_ACCESSIBILITY_SERVICE`) + `res/xml/service_config.xml` | User must enable it manually in system settings (`Settings.ACTION_ACCESSIBILITY_SETTINGS`). Cannot be granted programmatically. Enabled-state is detected in `SetupHelper.isAccessibilityServiceEnabled`. |
 | Network | — | None. The app has no `INTERNET` permission. |
+
+## Google Play accessibility policy (why the wizard exists)
+The 0.3 submission was rejected: "Accessibility API policy: Missing prominent disclosure". The app is **not** an
+accessibility tool (it does not set `isAccessibilityTool`), so Play requires, per the AccessibilityService API and
+User Data policies:
+- an **in-app prominent disclosure** (not only in the listing, privacy policy or the service's own description),
+  shown before the user is sent to Accessibility settings, as a separate disclosure (not mixed with other
+  disclosures), requiring an **affirmative action** (tap Agree) and offering a way to decline;
+- the use of the API documented in the **store listing** (`docs/store/listing.md`);
+- the **Accessibility declaration** in Play Console plus a **demo video** of the disclosure and consent flows.
+Implemented in 0.4: wizard step 3 (`SetupActivity`), `ConsentStore`, and a consent gate in
+`UssdAccessibilityService`. Checklist: [store/listing.md](store/listing.md). The app label is still
+"Accessibility demo" by the maintainer's choice; the Play title adds ": USSD". If a reviewer objects to the name,
+change `app_name` only (never `applicationId`).
 
 ## Android-specific behaviour the code relies on
 - The USSD reply dialog belongs to package `com.android.phone` and exposes `android:id/message` and

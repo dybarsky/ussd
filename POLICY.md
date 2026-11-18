@@ -2,6 +2,8 @@
 
 This privacy policy applies to the "Accessibility demo" app (hereby referred to as "Application") for Android devices that was created by Maksym Dybarskyi (hereby referred to as "Service Provider") as an Open Source service under the MIT license. This service is intended for use "AS IS".
 
+The Application is a technical demonstration of the Android AccessibilityService API, made to showcase the developer's technical skills. Saving and dialling USSD codes is the example use case it uses for the demonstration.
+
 In short: the Application keeps everything on your device. It has no Internet access, sends no data anywhere, and the Service Provider does not receive or hold any of your data from the Application.
 
 **Information Collection and Use**
@@ -21,6 +23,8 @@ The Application contains no advertising, no usage tracking, no crash reporting, 
 
 *   **Phone (CALL_PHONE):** This is the only permission you are asked to grant. It is used to dial the USSD codes that you saved, when you tap one. The Application does not read your call history, contacts, or phone state. Depending on your device, the system phone app may itself record dialled codes in its call history; that is done by the system, not by the Application.
 *   **Accessibility service:** When you run a saved USSD code, the Android system shows the operator's reply in a system dialog. The Application uses an Android AccessibilityService, restricted to the system phone package (com.android.phone), to read the text of that USSD response dialog and to click its dismiss (OK) button. This happens only while a run started from the Application is waiting for its reply, which is at most 30 seconds after you tap a code. The text read is stored locally on your device as the response for that code and is shown to you in the Application.
+
+Before the Application sends you to your device's accessibility settings, it shows a separate screen that explains this use of the AccessibilityService, and the service only reads a USSD reply after you tap "Agree" on that screen. You can tap "No thanks" instead. The Application then still dials your saved codes, but it does not capture or show the replies, and you can reopen the screen later from the banner in the list. The Application uses the AccessibilityService API only for the purpose described here.
 
 The accessibility service is limited to the system phone package. Android delivers window-change events from that package to the service, and the service is technically permitted to read the content of those windows. The Application ignores these events unless a run it started is waiting for a reply, and even then it reads only the message text and the OK button of the reply dialog. It does not read the content of any other app or screen, does not record keystrokes, and does not transmit anything. The text it reads is not shared with anyone. You must enable the service manually in your device's system accessibility settings, and you can disable it there at any time. Without it, the Application cannot capture USSD responses.
 
@@ -50,7 +54,7 @@ The Application's data is stored in app-private storage that is protected by the
 
 This Privacy Policy may be updated from time to time. Any changes will be published by updating this page with the new Privacy Policy. You are advised to consult this Privacy Policy regularly for any changes.
 
-This privacy policy is effective as of 2026-11-17
+This privacy policy is effective as of 2026-11-18
 
 **Your Consent**
 

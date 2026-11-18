@@ -53,7 +53,8 @@ Do **not** run `clean` as a verification step.
 - [x] GitHub Actions workflow; delete `.travis.yml`. (727ad14)
 - [ ] First green run of the workflow on GitHub (never run; SDK availability on the runner unverified).
 - [x] Rewrite `POLICY.md` to match actual behaviour; fix strings typo ("quite codes" → "quick codes"). (faf7ab9)
-- [ ] Play Console: Accessibility API declaration, Data safety form, target-API requirement (open). `versionCode` bump is already applied in `build.gradle` (3 / `0.3`).
+- [x] Play rejection "Missing prominent disclosure" (2026-11-18): in-app 3-step wizard with accessibility disclosure and consent, new icon, listing text. `versionCode` 4 / `0.4`. See [context.md](../context.md#google-play-accessibility-policy-why-the-wizard-exists).
+- [ ] Play Console: Accessibility declaration + demo video, Data safety form, new listing text/icon/feature graphic/screenshots ([store/listing.md](../store/listing.md)), then resubmit 0.4 (open; needs the maintainer).
 
 ## Phase 5 — Optional modernization (separate PRs)
 - [ ] Move to `app/` module layout; Kotlin DSL + `libs.versions.toml`.

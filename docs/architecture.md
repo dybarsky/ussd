@@ -31,13 +31,14 @@ Status: this file describes the code after the AGP 9 / AndroidX upgrade (branch 
 ```
 
 ### Composition root — `App.java`
-`App extends Application` creates three singletons and exposes them through a **static `App.INSTANCE`**:
+`App extends Application` creates four singletons and exposes them through a **static `App.INSTANCE`**:
 
 | Field | Type | Implementation |
 |---|---|---|
 | `ussdStorage` | `UssdRepository` | `UssdSimpleStorage` |
 | `ussdExecutor` | `UssdExecutor` | `UssdRunner` |
 | `eventBus` | `EventBus` | `LocalBroadcastManager` wrapper |
+| `consentStore` | `ConsentStore` | SharedPreferences file `settings`: `onboarding_done`, `accessibility_disclosure_accepted` (+ timestamp) |
 
 Everything that needs them (activities, the accessibility service) reaches for `App.INSTANCE.*`. This is a
 service locator, not DI; it is the single seam to replace if you introduce Hilt/Koin or constructor injection.
@@ -73,6 +74,9 @@ Declared in the manifest with `BIND_ACCESSIBILITY_SERVICE` and configured by `re
 (protected by `BIND_ACCESSIBILITY_SERVICE`).
 
 On every matching window-state event it:
+0. **returns immediately unless the user agreed to the in-app accessibility disclosure**
+   (`consentStore.isAccessibilityAccepted()`); the service can be switched on from system settings without the
+   wizard, and must then do nothing,
 0. **returns immediately unless `ussdExecutor.hasPending()`** (a run started by this app is waiting), so
    unrelated `com.android.phone` dialogs are neither read nor dismissed,
 1. gets `event.getSource()` (root node); returns if the event or node is `null`,
@@ -83,12 +87,20 @@ On every matching window-state event it:
 5. performs `ACTION_CLICK` on the button to dismiss the system dialog.
 
 ### UI
-- `SetupActivity` (`exported=false`) — onboarding/status screen with two rows (CALL_PHONE permission;
-  accessibility service enabled), bound with `ActivitySetupBinding`. Tapping a row requests the permission /
-  opens system accessibility settings. `onResume` re-evaluates; "Next" appears when both are OK and launches
-  `UssdListActivity` (`CLEAR_TASK|NEW_TASK`).
-- `UssdListActivity` (launcher, `exported=true`) — `onStart` redirects to `SetupActivity` if prerequisites are
-  missing. Shows a `RecyclerView` + FAB (`ActivityUssdListBinding`). FAB opens an `AlertDialog` whose view is
+- `SetupActivity` (`exported=false`) — three-step onboarding wizard (`ActivitySetupBinding`, one layout with three
+  `ScrollView` step panels, dots indicator, shared primary/secondary buttons): 1) what the app does, 2) why
+  `CALL_PHONE` is needed (Allow / Not now), 3) the **prominent disclosure** for the AccessibilityService
+  (**Agree and open settings** / **No thanks**). Step 3 contains nothing but the accessibility disclosure, as
+  Google Play's User Data policy requires a separate disclosure. Consent is stored (`ConsentStore`) only when
+  **Agree** is tapped, before `Settings.ACTION_ACCESSIBILITY_SETTINGS` is opened. Back or Home is not consent.
+  Optional extra `EXTRA_STEP` opens a given step (used by the list banner and for upgraders). The wizard finishes
+  when the service is on after Agree, or on No thanks; it sets `onboarding_done` and starts `UssdListActivity`
+  if it is the task root. Back moves to the previous step.
+- `UssdListActivity` (launcher, `exported=true`) — `onStart` opens the wizard only if `onboarding_done` is false
+  (starting at step 3 when `CALL_PHONE` is already granted, i.e. for users upgrading from 0.3 or older), otherwise
+  `updateBanner()`: a banner above the list appears when the phone permission is off or reply capture is not
+  consented/enabled, and its **Set up** button reopens the wizard at the missing step. Declining therefore never
+  traps the user in the wizard. Shows a `RecyclerView` + FAB (`ActivityUssdListBinding`). FAB opens an `AlertDialog` whose view is
   `DialogAddUssdBinding` (`dialog_add_ussd.xml`): a single `inputType=phone` field (the system keyboard types the
   `*` and `#`). The dialog does not auto-focus the field. Row tap runs the code. It subscribes to `USSD_RESULT_RECEIVED` in `onResume`
   and unsubscribes in `onPause`, reloading the list on each event. The only helper inner class left is
@@ -97,8 +109,9 @@ On every matching window-state event it:
 - **Theme and window insets** — `Theme.Ussd` (`Theme.Material3.DayNight.NoActionBar`, `res/values/themes.xml`)
   is set on `<application>`; no colours are defined by the app. Both activities call `EdgeToEdge.enable(this)`
   before `super.onCreate` and apply `systemBars | displayCutout` insets with `ViewCompat.setOnApplyWindowInsetsListener`:
-  `SetupActivity` pads its root; `UssdListActivity` pads the `RecyclerView` (`clipToPadding=false`) and adds the
-  insets to the FAB margins. Insets are then consumed.
+  `SetupActivity` pads its root; `UssdListActivity` pads its root with the top/side insets (so the banner sits
+  below the status bar), pads the `RecyclerView` bottom (`clipToPadding=false`) and adds the bottom inset to the FAB
+  margin. Insets are then consumed.
 - `UssdListPresenter` — thin: `addUssd(code)`, `loadUssdList()`, `runUssd(ussd)`. Pushes data to the view via
   `UssdViewModel.setDataAndInvalidateView(List<Ussd>)` (naming is "view contract", not an Android ViewModel).
 - `UssdListAdapter` — `RecyclerView.Adapter` using **DataBinding** (`ussd_list_item.xml`, variable `ussd`,

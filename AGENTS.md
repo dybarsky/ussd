@@ -10,7 +10,7 @@ the code and dismisses the dialog. Launcher label: "Accessibility demo". Open so
 
 - Package / applicationId / namespace: `com.tooploox.ussd` (**must never change** — it is the app's identity on Google Play)
 - Language: Java (source/target 17), no Kotlin
-- Version: `versionCode 3` / `versionName "0.3"` (last released: 2 / "0.2", git tag `0.2`)
+- Version: `versionCode 4` / `versionName "0.4"` (0.3 was rejected by Google Play — missing prominent accessibility disclosure; last released: 2 / "0.2", git tag `0.2`)
 - Single Gradle module; **the app module is the repo root** (no `app/` directory)
 - No tests, no DI framework, no network access (no `INTERNET` permission)
 
@@ -25,15 +25,15 @@ proguard-rules.pro        keep rules for the serialized `Ussd` class (used with 
 lint-baseline.xml         10 deferred lint findings; new lint issues fail the build
 .github/workflows/build.yml   GitHub Actions: assembleDebug + lintDebug, uploads APK and lint report
 POLICY.md                 privacy policy (matches actual behaviour since faf7ab9)
-docs/                     architecture, context, upgrade analysis/log
+docs/                     architecture, context, upgrade analysis/log, store/ (Play listing text, icon source, console checklist)
 src/main/AndroidManifest.xml
 src/main/java/com/tooploox/ussd/
     App.java                       Application; hand-rolled service locator (App.INSTANCE)
     accessibility/                 UssdAccessibilityService  (reads the system dialog)
     data/                          UssdRepository, UssdExecutor + implementations
     domain/Ussd.java               the only model class (pinned serialVersionUID)
-    ui/                            activities, adapter, presenter, Serializer
-    utils/                         EventBus, SetupHelper, Strings, Predicate, ItemViewPositionProvider
+    ui/                            activities (SetupActivity = 3-step wizard), adapter, presenter, Serializer
+    utils/                         ConsentStore, EventBus, SetupHelper, Strings, Predicate, ItemViewPositionProvider
 src/main/res/                      layouts, drawables, strings (English only), Theme.Ussd (Material 3 DayNight)
 ```
 
@@ -60,9 +60,11 @@ adb install -r build/outputs/apk/debug/ussd-debug.apk
 Emulator testing notes (observed on an API 37 emulator during the upgrade; not part of the build):
 - `SetupActivity` is `exported=false`, so launch `UssdListActivity` instead
   (`adb shell am start -n com.tooploox.ussd/.ui.UssdListActivity`).
-- The list screen redirects to `SetupActivity` unless `CALL_PHONE` is granted **and** the accessibility service is
-  enabled. `adb shell pm clear com.tooploox.ussd` resets the accessibility setting; after installing/clearing,
-  re-apply the secure setting if needed (`enabled_accessibility_services` =
+- The list screen opens the setup wizard only until onboarding is done (`ConsentStore`, prefs file `settings`); after
+  that a banner offers to reopen it. The service reads nothing until the user tapped **Agree** on the wizard's
+  disclosure step, so enabling it via adb alone is not enough: `pm clear` and go through the wizard (or set
+  `accessibility_disclosure_accepted` in `shared_prefs/settings.xml`). `pm clear` also resets the accessibility
+  setting (`enabled_accessibility_services` =
   `com.tooploox.ussd/com.tooploox.ussd.accessibility.UssdAccessibilityService`, plus `accessibility_enabled 1`).
 - A real USSD round trip needs a SIM device; it has not been tested.
 
@@ -71,7 +73,8 @@ Emulator testing notes (observed on an API 37 emulator during the upgrade; not p
 | Doc | Purpose |
 |---|---|
 | [docs/architecture.md](docs/architecture.md) | Layers, classes, runtime flow, threading, persistence, build-time setup |
-| [docs/context.md](docs/context.md) | Product/domain context, permissions, Android-specific gotchas, quirk table with status |
+| [docs/context.md](docs/context.md) | Product/domain context, permissions, Google Play accessibility policy, Android-specific gotchas, quirk table with status |
+| [docs/store/listing.md](docs/store/listing.md) | Play listing text, graphic assets, Play Console declaration + demo-video checklist |
 | [docs/upgrade/README.md](docs/upgrade/README.md) | Modernization roadmap — original vs target versions, phases, status |
 | [docs/upgrade/01-build-tooling.md](docs/upgrade/01-build-tooling.md) | Gradle, JDK, AGP, SDK, settings.gradle, wrapper bootstrap, CI |
 | [docs/upgrade/02-dependencies.md](docs/upgrade/02-dependencies.md) | Support Library → AndroidX, Material, ButterKnife removal, import/XML mapping tables |
@@ -96,6 +99,12 @@ Emulator testing notes (observed on an API 37 emulator during the upgrade; not p
 | R8 | optimize + obfuscate (`proguard-android-optimize.txt` + `proguard-rules.pro`); `Ussd` kept | custom copy with `-dontoptimize`/`-dontobfuscate` |
 | Lint | `abortOnError = true` with `lint-baseline.xml` | `abortOnError false` |
 | CI | GitHub Actions (never run on GitHub yet) | Travis (dead) |
+
+Play compliance (2026-11-18): the 0.3 submission was rejected for a missing prominent disclosure of the
+AccessibilityService. 0.4 adds a 3-step wizard (intro, phone permission, accessibility disclosure with Agree / No thanks),
+a consent gate in the service (`ConsentStore`), a list-screen banner to reopen the wizard, a dial-pad adaptive icon and
+new listing text. Never remove the disclosure step or let the service read anything before consent. Still to do by the
+maintainer: Play Console declaration + demo video, store assets, resubmit (see docs/store/listing.md).
 
 Still open (details in [docs/upgrade/05](docs/upgrade/05-plan-and-verification.md)): upgrade-over-old-APK data test,
 real USSD round trip on a SIM device / OEM dialogs, first GitHub Actions run, Play Console steps, dark mode / large
