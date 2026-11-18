@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.tooploox.ussd.App;
+import com.tooploox.ussd.R;
 import com.tooploox.ussd.databinding.ActivityUssdListBinding;
 import com.tooploox.ussd.databinding.DialogAddUssdBinding;
 import com.tooploox.ussd.domain.Ussd;
@@ -69,20 +70,20 @@ public class UssdListActivity extends AppCompatActivity {
     }
 
     private void applyWindowInsets() {
-        // The FAB's margin from the layout (@dimen/fab_margin) is the base; insets are added on top of it.
+        // The FAB's margin from the layout (@dimen/fab_margin) is the base; the bottom inset is added on top of it.
         ViewGroup.MarginLayoutParams fabParams = (ViewGroup.MarginLayoutParams) binding.buttonAdd.getLayoutParams();
-        int fabLeft = fabParams.leftMargin;
-        int fabRight = fabParams.rightMargin;
         int fabBottom = fabParams.bottomMargin;
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (root, windowInsets) -> {
             Insets bars = windowInsets.getInsets(
                     WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
-            // The list scrolls under the bars (clipToPadding=false) but its first/last rows can be reached.
-            binding.recyclerView.setPadding(bars.left, bars.top, bars.right, bars.bottom);
-            fabParams.setMargins(fabLeft + bars.left, fabParams.topMargin, fabRight + bars.right, fabBottom + bars.bottom);
+            // Top and sides are applied to the whole screen so the banner sits below the status bar.
+            root.setPadding(bars.left, bars.top, bars.right, 0);
+            // The list scrolls above the navigation bar (clipToPadding=false) but its last row can be reached.
+            binding.recyclerView.setPadding(0, 0, 0, bars.bottom);
+            fabParams.setMargins(fabParams.leftMargin, fabParams.topMargin, fabParams.rightMargin, fabBottom + bars.bottom);
             binding.buttonAdd.setLayoutParams(fabParams);
-            // Both children are handled above and neither needs the insets, so consume them.
+            // All children are handled above and none needs the insets, so consume them.
             return WindowInsetsCompat.CONSUMED;
         });
     }
@@ -90,7 +91,9 @@ public class UssdListActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        checkSetupConditions();
+        if (!checkOnboarding()) {
+            updateBanner();
+        }
     }
 
     @Override
@@ -120,11 +123,43 @@ public class UssdListActivity extends AppCompatActivity {
         return notEmptyPredicate.apply(dialogBinding.dialogEtUssdQuery);
     }
 
-    private void checkSetupConditions() {
-        if (!SetupHelper.isPermissionGranted(this) || !SetupHelper.isAccessibilityServiceEnabled(this)) {
-            Intent intent = new Intent(this, SetupActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+    /**
+     * Opens the setup wizard the first time the app runs. Users upgrading from a version without the wizard
+     * already hold the phone permission, so they only need to see the accessibility disclosure.
+     *
+     * @return true if the wizard was launched
+     */
+    private boolean checkOnboarding() {
+        if (App.INSTANCE.consentStore.isOnboardingDone()) {
+            return false;
         }
+        Intent intent = new Intent(this, SetupActivity.class);
+        intent.putExtra(SetupActivity.EXTRA_STEP,
+                SetupHelper.isPermissionGranted(this) ? SetupActivity.STEP_ACCESSIBILITY : SetupActivity.STEP_INTRO);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        return true;
+    }
+
+    /**
+     * Declining (or later revoking) a permission must not trap the user in the wizard; instead the list shows a
+     * banner that reopens the wizard at the missing step. This is also how the disclosure can be shown again.
+     */
+    private void updateBanner() {
+        boolean phoneGranted = SetupHelper.isPermissionGranted(this);
+        boolean repliesOn = App.INSTANCE.consentStore.isAccessibilityAccepted()
+                && SetupHelper.isAccessibilityServiceEnabled(this);
+        if (phoneGranted && repliesOn) {
+            binding.banner.setVisibility(View.GONE);
+            return;
+        }
+        binding.bannerText.setText(phoneGranted ? R.string.banner_replies_off : R.string.banner_phone_off);
+        binding.bannerAction.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SetupActivity.class);
+            intent.putExtra(SetupActivity.EXTRA_STEP,
+                    phoneGranted ? SetupActivity.STEP_ACCESSIBILITY : SetupActivity.STEP_PHONE);
+            startActivity(intent);
+        });
+        binding.banner.setVisibility(View.VISIBLE);
     }
 }

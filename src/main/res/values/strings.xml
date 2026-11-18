@@ -2,16 +2,45 @@
 <resources>
     <string name="app_name">Accessibility demo</string>
     <string name="ussd_code">USSD code:</string>
-    <string name="accessibility_service_summary">This accessibility service is designed to extract USSD (quick codes) responses</string>
-    <string name="accessibility_service_description">The USSD codes, also known as `quick codes`, are usually used for communicating with GSM operator. Often they look like *100#, *123#, etc.
-        Enable the accessibility service if you want it to read USSD responses (like current SIM balance, etc) from system dialog and show them in the list within the application.
-        In the application you will need to add quick code. If you click on the list item with USSD code, the system telephony dialog will appear.
-        When USSD response arrives, the accessibility service will extract the text of dialog and show it on the list within the application</string>
+    <string name="accessibility_service_summary">Technical demo: reads the operator’s reply from the system USSD dialog after you run a saved code in this app</string>
+    <string name="accessibility_service_description">This app is a technical demo of the Android AccessibilityService API. Saving and dialling USSD codes (like *100#) is its example use case.
+        This service reads the text of the operator’s reply from the system phone dialog (com.android.phone only) and presses its OK button so the dialog closes.
+        It only does this for up to 30 seconds after you tap a code in this app. The reply is shown in the app and stored on this device only.
+        It does not read any other app or screen, does not record what you type, and sends nothing off the device.</string>
     <string name="default_ussd_response">. . .</string>
-    <string name="permission_description_disabled">Application requires additional permissions.\nClick here to allow.</string>
-    <string name="permission_description_enabled">All permissions are permitted.</string>
-    <string name="accessibility_description_disabled">Accessibility service should be enabled.\nClick here to open settings.</string>
-    <string name="accessibility_description_enabled">The accessibility service is enabled.</string>
-    <string name="next">Next</string>
     <string name="add_ussd">Add USSD code</string>
+
+    <!-- Setup wizard -->
+    <string name="wizard_next">Next</string>
+
+    <string name="wizard_intro_title">A demo of the Android Accessibility Service</string>
+    <string name="wizard_intro_body">This app is a technical demo of the AccessibilityService API, made to showcase the developer’s skills. USSD codes are just an example use case.</string>
+    <string name="wizard_intro_point_save">Save a USSD code, for example *100#.</string>
+    <string name="wizard_intro_point_run">Tap it to dial.</string>
+    <string name="wizard_intro_point_reply">The accessibility service reads the operator’s reply from the system dialog and shows it next to the code.</string>
+    <string name="wizard_intro_privacy">Everything stays on your device. The app has no internet access.</string>
+
+    <string name="wizard_phone_title">Allow phone calls</string>
+    <string name="wizard_phone_body">The app needs the Phone permission to dial the USSD codes you saved, when you tap one.</string>
+    <string name="wizard_phone_point_used">Used only to dial the code you tapped.</string>
+    <string name="wizard_phone_point_unused">Not used to read your contacts, call history or phone state.</string>
+    <string name="wizard_phone_granted">Phone permission granted.</string>
+    <string name="wizard_phone_allow">Allow phone permission</string>
+    <string name="wizard_phone_skip">Not now</string>
+
+    <!-- Prominent disclosure (Google Play User Data policy). Keep this screen about the accessibility service only. -->
+    <string name="wizard_accessibility_title">This app uses Android’s Accessibility Service to read USSD replies</string>
+    <string name="wizard_accessibility_body">Accessibility demo uses the AccessibilityService API to read the text of the operator’s reply in the system phone dialog that appears after you run a USSD code in this app, and to press its OK button so the dialog closes.</string>
+    <string name="wizard_accessibility_point_scope">It only works on dialogs from the system phone app (com.android.phone), and only for up to 30 seconds after you tap a code in this app.</string>
+    <string name="wizard_accessibility_point_not_read">It does not read any other app or screen, does not record what you type, and does not collect passwords or personal data.</string>
+    <string name="wizard_accessibility_point_stored">The reply text is saved only on this device and shown in the app. Nothing is sent anywhere.</string>
+    <string name="wizard_accessibility_point_control">You can turn the service off at any time in Settings → Accessibility. If you decline, you can still dial your codes, but replies will not be captured and shown in the app.</string>
+    <string name="wizard_accessibility_agree">Agree and open settings</string>
+    <string name="wizard_accessibility_decline">No thanks</string>
+    <string name="wizard_accessibility_hint">In the Accessibility settings, find “Accessibility demo” and turn it on, then come back here.</string>
+
+    <!-- List screen banner -->
+    <string name="banner_phone_off">Phone permission is off, so saved codes can’t be dialled.</string>
+    <string name="banner_replies_off">Replies from your operator are not being captured.</string>
+    <string name="banner_action">Set up</string>
 </resources>

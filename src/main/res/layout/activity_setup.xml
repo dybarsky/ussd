@@ -1,74 +1,246 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/permissions_status"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_disabled"
-        android:importantForAccessibility="no"
-        android:layout_marginStart="@dimen/permission_status_left_margin"
-        android:layout_marginTop="@dimen/permission_status_top_margin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        />
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/wizard_dots_padding"
+        android:paddingBottom="@dimen/wizard_dots_padding">
 
-    <TextView
-        android:id="@+id/permissions_description"
-        android:layout_width="wrap_content"
+        <View
+            android:id="@+id/dot_0"
+            android:layout_width="@dimen/wizard_dot_size"
+            android:layout_height="@dimen/wizard_dot_size"
+            android:layout_marginHorizontal="@dimen/wizard_dot_margin"
+            android:importantForAccessibility="no" />
+
+        <View
+            android:id="@+id/dot_1"
+            android:layout_width="@dimen/wizard_dot_size"
+            android:layout_height="@dimen/wizard_dot_size"
+            android:layout_marginHorizontal="@dimen/wizard_dot_margin"
+            android:importantForAccessibility="no" />
+
+        <View
+            android:id="@+id/dot_2"
+            android:layout_width="@dimen/wizard_dot_size"
+            android:layout_height="@dimen/wizard_dot_size"
+            android:layout_marginHorizontal="@dimen/wizard_dot_margin"
+            android:importantForAccessibility="no" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- Step 1: what the app does -->
+        <ScrollView
+            android:id="@+id/step_intro"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/wizard_content_padding">
+
+                <ImageView
+                    android:layout_width="@dimen/wizard_icon_size"
+                    android:layout_height="@dimen/wizard_icon_size"
+                    android:layout_marginBottom="@dimen/wizard_block_spacing"
+                    android:importantForAccessibility="no"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wizard_intro_title"
+                    android:textAppearance="?attr/textAppearanceHeadlineSmall" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/wizard_block_spacing"
+                    android:text="@string/wizard_intro_body"
+                    android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/wizard_block_spacing"
+                    android:text="@string/wizard_intro_point_save"
+                    android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/wizard_point_spacing"
+                    android:text="@string/wizard_intro_point_run"
+                    android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/wizard_point_spacing"
+                    android:text="@string/wizard_intro_point_reply"
+                    android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/wizard_block_spacing"
+                    android:text="@string/wizard_intro_privacy"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?android:attr/textColorSecondary" />
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- Step 2: phone permission -->
+        <ScrollView
+            android:id="@+id/step_phone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/wizard_content_padding">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wizard_phone_title"
+                    android:textAppearance="?attr/textAppearanceHeadlineSmall" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/wizard_block_spacing"
+                    android:text="@string/wizard_phone_body"
+                    android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/wizard_block_spacing"
+                    android:text="@string/wizard_phone_point_used"
+                    android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/wizard_point_spacing"
+                    android:text="@string/wizard_phone_point_unused"
+                    android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+                <TextView
+                    android:id="@+id/phone_granted"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/wizard_block_spacing"
+                    android:text="@string/wizard_phone_granted"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorPrimary"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- Step 3: prominent disclosure about the AccessibilityService. Nothing else belongs on this screen. -->
+        <ScrollView
+            android:id="@+id/step_accessibility"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/wizard_content_padding">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wizard_accessibility_title"
+                    android:textAppearance="?attr/textAppearanceHeadlineSmall" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/wizard_block_spacing"
+                    android:text="@string/wizard_accessibility_body"
+                    android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/wizard_block_spacing"
+                    android:text="@string/wizard_accessibility_point_scope"
+                    android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/wizard_point_spacing"
+                    android:text="@string/wizard_accessibility_point_not_read"
+                    android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/wizard_point_spacing"
+                    android:text="@string/wizard_accessibility_point_stored"
+                    android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/wizard_point_spacing"
+                    android:text="@string/wizard_accessibility_point_control"
+                    android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+                <TextView
+                    android:id="@+id/accessibility_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/wizard_block_spacing"
+                    android:text="@string/wizard_accessibility_hint"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorPrimary"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </ScrollView>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/permission_description_left_margin"
-        android:layout_marginTop="@dimen/permission_description_top_margin"
-        android:text="@string/permission_description_disabled"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        app:layout_constraintStart_toEndOf="@id/permissions_status"
-        app:layout_constraintTop_toTopOf="@id/permissions_status"
-        />
+        android:orientation="vertical"
+        android:padding="@dimen/wizard_content_padding">
 
+        <Button
+            android:id="@+id/btn_primary"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/wizard_next" />
 
-    <ImageView
-        android:id="@+id/accessibility_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_disabled"
-        android:importantForAccessibility="no"
-        android:layout_marginTop="@dimen/accessibility_status_top_margin"
-        app:layout_constraintStart_toStartOf="@+id/permissions_status"
-        app:layout_constraintTop_toBottomOf="@id/permissions_status"
-        />
+        <Button
+            android:id="@+id/btn_secondary"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/accessibility_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/accessibility_description_left_margin"
-        android:layout_marginTop="@dimen/accessibility_description_top_margin"
-        android:text="@string/accessibility_description_disabled"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        app:layout_constraintStart_toEndOf="@id/accessibility_status"
-        app:layout_constraintTop_toTopOf="@id/accessibility_status"
-        />
-
-
-    <Button
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:id="@+id/next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/next"
-        android:visibility="gone"
-        android:layout_marginTop="@dimen/next_button_top_margin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/accessibility_description"
-        />
-
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
