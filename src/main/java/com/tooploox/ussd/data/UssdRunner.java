@@ -2,6 +2,7 @@ package com.tooploox.ussd.data;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.SystemClock;
@@ -45,7 +46,12 @@ public class UssdRunner implements UssdExecutor {
         Uri uri = Uri.parse("tel:" + ussdCode);
         Intent intent = new Intent(Intent.ACTION_CALL, uri);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        try {
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            // Device without telephony (the app is installable there): nothing will answer, so no run is pending.
+            pendingUssd = null;
+        }
     }
 
     @Override

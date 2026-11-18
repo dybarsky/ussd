@@ -22,7 +22,7 @@ settings.gradle           repositories (google, mavenCentral), rootProject.name
 gradle.properties         jvmargs, build cache, configuration cache
 gradle/wrapper/           Gradle 9.6.1 (-bin, sha256 pinned)
 proguard-rules.pro        keep rules for the serialized `Ussd` class (used with proguard-android-optimize.txt)
-lint-baseline.xml         10 deferred lint findings; new lint issues fail the build
+lint-baseline.xml         9 deferred lint findings; new lint issues fail the build
 .github/workflows/build.yml   GitHub Actions: assembleDebug + lintDebug, uploads APK and lint report
 POLICY.md                 privacy policy (matches actual behaviour since faf7ab9)
 docs/                     architecture, context, upgrade analysis/log, store/ (Play listing text, icon source, console checklist)
@@ -139,7 +139,7 @@ Open:
    than 30 s is not captured and the dialog is not auto-dismissed); `run` silently returns when `CALL_PHONE` is
    missing. Tiny gap: if the window expires between the service's `hasPending()` check and `setResponse()`, the
    service still fires the refresh event and clicks the dialog without storing the reply.
-6. `lint-baseline.xml` holds 10 deferred findings (see docs/context.md).
+6. `lint-baseline.xml` holds 9 deferred findings (see docs/context.md).
 
 Fixed in the upgrade (history kept in docs/context.md): service NPEs / acting on any phone dialog, null entries and
 unstable order in the stored list, manifest `exported`/`package`, proguard copy, `POLICY.md`, stray `res/res/`

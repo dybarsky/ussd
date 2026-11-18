@@ -4,6 +4,14 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <!--
+        CALL_PHONE implies a required telephony feature, which hides the app from devices without a SIM/modem
+        (Wi-Fi tablets, Chromebooks, desktops, XR). The app installs there too; dialling is simply unavailable.
+    -->
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
+    <!--
         allowBackup is disabled on purpose: user data is stored as Java-serialized objects in
         SharedPreferences, which cannot be safely restored across app versions.
     -->
