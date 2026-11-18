@@ -16,6 +16,11 @@ public class UssdAccessibilityService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        // Never read or click anything unless the user agreed to the in-app disclosure. The service can be
+        // switched on from system settings without going through the app's onboarding.
+        if (!App.INSTANCE.consentStore.isAccessibilityAccepted()) {
+            return;
+        }
         // Only act on dialogs that belong to a USSD run started by this app, so unrelated
         // com.android.phone dialogs are never read or dismissed. Known consequence: the pending
         // state is in memory only, so if the process was killed between run and reply, the

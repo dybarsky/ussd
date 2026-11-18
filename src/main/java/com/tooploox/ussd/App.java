@@ -6,6 +6,7 @@ import com.tooploox.ussd.data.UssdExecutor;
 import com.tooploox.ussd.data.UssdRepository;
 import com.tooploox.ussd.data.UssdRunner;
 import com.tooploox.ussd.data.UssdSimpleStorage;
+import com.tooploox.ussd.utils.ConsentStore;
 import com.tooploox.ussd.utils.EventBus;
 
 /**
@@ -19,6 +20,7 @@ public class App extends Application {
     public UssdRepository ussdStorage;
     public UssdExecutor ussdExecutor;
     public EventBus eventBus;
+    public ConsentStore consentStore;
 
     @Override
     public void onCreate() {
@@ -27,6 +29,7 @@ public class App extends Application {
         ussdStorage = new UssdSimpleStorage(this);
         ussdExecutor = new UssdRunner(this);
         eventBus = new EventBus(this);
+        consentStore = new ConsentStore(this);
 
         INSTANCE = this;
     }
