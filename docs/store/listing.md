@@ -40,6 +40,20 @@ Your mobile operator's own terms and charges apply to the USSD codes you run. Th
 Replace `<PRIVACY POLICY URL>` with the public URL of `POLICY.md` (the same URL as in the Play Console privacy
 policy field). The full description above is about 1,900 characters.
 
+## What's new (release notes, ≤ 500)
+
+Version 0.4.1:
+
+```
+Version 0.4.1
+• New setup wizard: what the app does, why the Phone permission is needed, and how it uses the Accessibility Service.
+• The accessibility service works only after you agree in the app. "No thanks" still lets you dial codes.
+• A banner on the list screen lets you finish setup later.
+• New app icon.
+• Now installable on tablets and other devices without a SIM.
+• The app is a technical demo of the Accessibility Service; USSD is the example.
+```
+
 ## Graphic assets
 
 | Asset | File | Notes |
