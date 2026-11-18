@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dial pad: nine keys, then * 0 #. The group scales the artwork to 80% around its own centre (54,55.5), moved to the
+         canvas centre, to leave generous padding inside the 66dp adaptive-icon safe zone. Same transform in docs/store/icon.svg. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <group
+        android:pivotX="54"
+        android:pivotY="55.5"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        android:translateY="-1.5">
+        <!-- keys: rows y=34,48,62 and the middle key of the last row y=76; columns x=40,54,68 -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M35.5,34a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0
+                              M49.5,34a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0
+                              M63.5,34a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0
+                              M35.5,48a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0
+                              M49.5,48a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0
+                              M63.5,48a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0
+                              M35.5,62a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0
+                              M49.5,62a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0
+                              M63.5,62a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0
+                              M49.5,76a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0" />
+
+        <!-- * at (40,76) -->
+        <path
+            android:pathData="M40,70.5L40,81.5M35.24,73.25L44.76,78.75M35.24,78.75L44.76,73.25"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3.2"
+            android:strokeLineCap="round" />
+
+        <!-- # at (68,76) -->
+        <path
+            android:pathData="M65.8,70.5L65.8,81.5M70.2,70.5L70.2,81.5M62.5,73.8L73.5,73.8M62.5,78.2L73.5,78.2"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3"
+            android:strokeLineCap="round" />
+    </group>
+</vector>

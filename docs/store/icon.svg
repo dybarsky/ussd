@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Source artwork for the launcher icon (res/drawable/ic_launcher_foreground.xml) and the Play Store icon.
+     viewBox is the Play Store crop (full-bleed square). Colours: background #0B5D75, glyph #FFFFFF. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="18 18 72 72">
+  <rect x="18" y="18" width="72" height="72" fill="#0B5D75"/>
+  <g transform="translate(54 54) scale(0.8) translate(-54 -55.5)">
+  <g fill="#FFFFFF">
+    <circle cx="40" cy="34" r="4.5"/><circle cx="54" cy="34" r="4.5"/><circle cx="68" cy="34" r="4.5"/>
+    <circle cx="40" cy="48" r="4.5"/><circle cx="54" cy="48" r="4.5"/><circle cx="68" cy="48" r="4.5"/>
+    <circle cx="40" cy="62" r="4.5"/><circle cx="54" cy="62" r="4.5"/><circle cx="68" cy="62" r="4.5"/>
+    <circle cx="54" cy="76" r="4.5"/>
+  </g>
+  <g fill="none" stroke="#FFFFFF" stroke-linecap="round">
+    <path stroke-width="3.2" d="M40,70.5V81.5M35.24,73.25L44.76,78.75M35.24,78.75L44.76,73.25"/>
+    <path stroke-width="3" d="M65.8,70.5V81.5M70.2,70.5V81.5M62.5,73.8H73.5M62.5,78.2H73.5"/>
+  </g>
+  </g>
+</svg>
