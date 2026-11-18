@@ -10,7 +10,7 @@ the code and dismisses the dialog. Launcher label: "Accessibility demo". Open so
 
 - Package / applicationId / namespace: `com.tooploox.ussd` (**must never change** — it is the app's identity on Google Play)
 - Language: Java (source/target 17), no Kotlin
-- Version: `versionCode 4` / `versionName "0.4"` (0.3 was rejected by Google Play — missing prominent accessibility disclosure; last released: 2 / "0.2", git tag `0.2`)
+- Version: `versionCode 5` / `versionName "0.4.1"` (0.3 was rejected by Google Play — missing prominent accessibility disclosure; last released: 2 / "0.2", git tag `0.2`)
 - Single Gradle module; **the app module is the repo root** (no `app/` directory)
 - No tests, no DI framework, no network access (no `INTERNET` permission)
 
